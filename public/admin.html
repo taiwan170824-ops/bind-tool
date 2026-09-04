@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Admin Panel - FF Tools Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #ff6b00;
+            --primary-dark: #cc5500;
+            --primary-light: #ff8c38;
+            --primary-glow: rgba(255, 107, 0, 0.4);
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #111118;
+            --bg-card: #161620;
+            --bg-card-hover: #1e1e2a;
+            --bg-input: #1a1a25;
+            --text-primary: #f0eeff;
+            --text-secondary: #a8a0c8;
+            --text-muted: #6a6288;
+            --border-color: #2a2a3a;
+            --border-light: #3a3a4a;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 8px 32px rgba(255, 107, 0, 0.3);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --nav-height: 72px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: calc(var(--nav-height) + 20px);
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.7); }
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
+            50% { box-shadow: 0 0 50px var(--primary-glow); }
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .fade-in { animation: fadeIn 0.5s ease forwards; }
+        .fade-up { animation: fadeInUp 0.6s ease forwards; }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #ff6b00, #ff8c38, #ff6b00);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 3s ease infinite;
+        }
+
+        /* ===== HEADER ===== */
+        .app-header {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 20px 10px;
+            border-bottom: 2px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideDown 0.5s ease;
+        }
+        .header-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 900;
+            color: #fff;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            animation: glow 2s infinite;
+            position: relative;
+        }
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 16px;
+            border: 2px solid var(--primary);
+            opacity: 0.3;
+            animation: pulse-dot 2s infinite;
+        }
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .logo-sub {
+            font-size: 9px;
+            font-weight: 500;
+            color: var(--text-muted);
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-badge {
+            background: rgba(255, 107, 0, 0.15);
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--primary-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .user-badge:hover {
+            background: rgba(255, 107, 0, 0.25);
+        }
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: #ef4444;
+            color: #ef4444;
+            transform: rotate(90deg);
+        }
+        .admin-badge {
+            background: rgba(255, 107, 0, 0.2);
+            border: 1px solid var(--primary);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: var(--transition);
+        }
+        .stat-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+        .stat-number {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary-light);
+        }
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+        .stat-icon {
+            font-size: 20px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        /* ===== TABS ===== */
+        .admin-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            overflow-x: auto;
+        }
+        .admin-tabs::-webkit-scrollbar {
+            height: 0;
+        }
+        .admin-tab {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+        }
+        .admin-tab:hover {
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .admin-tab.active {
+            background: var(--bg-card);
+            color: var(--primary-light);
+            border: 1px solid var(--border-color);
+        }
+        .admin-tab i {
+            margin-right: 6px;
+        }
+
+        /* ===== TAB CONTENT ===== */
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.4s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ===== USER LIST ===== */
+        .user-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+        .user-item:hover {
+            border-color: var(--border-light);
+            background: var(--bg-card-hover);
+        }
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .user-name .admin-tag {
+            font-size: 9px;
+            background: rgba(255, 107, 0, 0.15);
+            color: var(--primary-light);
+            padding: 1px 8px;
+            border-radius: 8px;
+            margin-left: 6px;
+            font-weight: 600;
+        }
+        .user-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-dot-sm {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot-sm.active {
+            background: #22c55e;
+        }
+        .status-dot-sm.banned {
+            background: #ef4444;
+        }
+        .user-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .user-actions button {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: none;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-ban {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+        .btn-ban:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+        .btn-unban {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+        .btn-unban:hover {
+            background: rgba(34, 197, 94, 0.25);
+        }
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* ===== FORM ===== */
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            outline: none;
+        }
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+        }
+        .form-input::placeholder {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--primary-glow);
+        }
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(220, 38, 38, 0.3);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            color: #fff;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(22, 163, 74, 0.3);
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 11px;
+            width: auto;
+        }
+        .btn .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+        }
+
+        /* ===== TOGGLE ===== */
+        .toggle-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+        }
+        .toggle {
+            width: 44px;
+            height: 24px;
+            background: var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        .toggle.active {
+            background: var(--primary);
+        }
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .toggle.active::after {
+            left: 22px;
+        }
+        .toggle-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== LOG LIST ===== */
+        .log-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            margin-bottom: 6px;
+            border-left: 3px solid var(--border-color);
+            font-size: 12px;
+            transition: var(--transition);
+        }
+        .log-item:hover {
+            border-left-color: var(--primary);
+            background: var(--bg-card-hover);
+        }
+        .log-time {
+            color: var(--text-muted);
+            font-size: 10px;
+        }
+        .log-action {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .log-user {
+            color: var(--primary-light);
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: rgba(10, 10, 15, 0.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 8px;
+            z-index: 1000;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: slideDown 0.5s ease;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 6px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            min-width: 52px;
+            position: relative;
+        }
+        .nav-item i {
+            font-size: 20px;
+            transition: var(--transition);
+        }
+        .nav-item span {
+            font-size: 9px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .nav-item:hover {
+            color: var(--text-secondary);
+        }
+        .nav-item.active {
+            color: var(--primary-light);
+        }
+        .nav-item.active i {
+            transform: translateY(-3px) scale(1.1);
+        }
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 0 0 4px 4px;
+        }
+        .nav-center {
+            position: relative;
+            top: -16px;
+        }
+        .nav-center .nav-item {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 50px;
+            box-shadow: 0 4px 30px var(--primary-glow);
+            min-width: auto;
+            animation: glow 2s infinite;
+        }
+        .nav-center .nav-item i {
+            font-size: 24px;
+        }
+        .nav-center .nav-item span {
+            color: #fff;
+            font-size: 10px;
+        }
+        .nav-center .nav-item:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 8px 40px var(--primary-glow);
+        }
+        .nav-center .nav-item:active {
+            transform: scale(0.95);
+        }
+        .nav-center .nav-item::before {
+            display: none;
+        }
+        .nav-center .nav-item.active {
+            color: #fff;
+        }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 16px;
+            left: 16px;
+            max-width: 400px;
+            margin: 0 auto;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            pointer-events: auto;
+            animation: slideDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+        }
+        .toast.success { border-left-color: #22c55e; }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.warning { border-left-color: #eab308; }
+        .toast-icon { font-size: 18px; flex-shrink: 0; }
+        .toast.success .toast-icon { color: #22c55e; }
+        .toast.error .toast-icon { color: #ef4444; }
+        .toast.warning .toast-icon { color: #eab308; }
+        .toast-content { flex: 1; font-size: 13px; font-weight: 500; }
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            transition: var(--transition);
+        }
+        .toast-close:hover {
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 420px) {
+            .logo-text { font-size: 17px; }
+            .logo-icon { width: 38px; height: 38px; font-size: 17px; }
+            .container { padding: 12px; }
+            .bottom-nav { padding: 0 4px; }
+            .nav-item { padding: 4px 10px; min-width: 44px; }
+            .nav-item i { font-size: 17px; }
+            .nav-item span { font-size: 8px; }
+            .nav-center .nav-item { padding: 10px 16px; }
+            .nav-center .nav-item i { font-size: 20px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .stat-number { font-size: 22px; }
+            .admin-tab { padding: 8px 12px; font-size: 11px; }
+        }
+        @media (min-width: 601px) {
+            body { padding-left: calc(50% - 300px); padding-right: calc(50% - 300px); }
+            .bottom-nav { left: 50%; transform: translateX(-50%); }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">🔥</div>
+                <div>
+                    <div class="logo-text text-gradient">FF Tools Pro</div>
+                    <div class="logo-sub">Admin Panel</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="admin-badge">👑 ADMIN</span>
+                <span class="user-badge"><i class="fas fa-user"></i> <span id="usernameDisplay">Admin</span></span>
+                <button class="logout-btn" onclick="handleLogout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ===== CONTAINER ===== -->
+    <div class="container">
+        <!-- ===== STATS ===== -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-number" id="statUsers">0</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-key"></i></div>
+                <div class="stat-number" id="statTokens">0</div>
+                <div class="stat-label">Tokens Captured</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-history"></i></div>
+                <div class="stat-number" id="statLogs">0</div>
+                <div class="stat-label">Total Logs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="stat-number" id="statUptime">0</div>
+                <div class="stat-label">Uptime</div>
+            </div>
+        </div>
+
+        <!-- ===== TABS ===== -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="users"><i class="fas fa-users"></i> Users</button>
+            <button class="admin-tab" data-tab="settings"><i class="fas fa-cog"></i> Settings</button>
+            <button class="admin-tab" data-tab="tokens"><i class="fas fa-key"></i> Tokens</button>
+            <button class="admin-tab" data-tab="logs"><i class="fas fa-history"></i> Logs</button>
+            <button class="admin-tab" data-tab="adduser"><i class="fas fa-user-plus"></i> Add User</button>
+        </div>
+
+        <!-- ===== TAB: USERS ===== -->
+        <div class="tab-content active" id="tab-users">
+            <div id="userList">
+                <div style="text-align:center;color:var(--text-muted);padding:20px;">
+                    <i class="fas fa-spinner fa-spin"></i> Loading users...
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TAB: SETTINGS ===== -->
+        <div class="tab-content" id="tab-settings">
+            <div style="background:var(--bg-card);border-radius:var(--radius);padding:20px;border:1px solid var(--border-color);">
+                <h3 style="margin-bottom:16px;"><i class="fas fa-cog"></i> System Settings</h3>
+                <div class="toggle-wrap">
+                    <div class="toggle" id="toggleMaintenance" onclick="toggleSetting('maintenance')"></div>
+                    <span class="toggle-label">Maintenance Mode</span>
+                </div>
+                <div class="toggle-wrap">
+                    <div class="toggle" id="toggleBanner" onclick="toggleSetting('banner_enabled')"></div>
+                    <span class="toggle-label">Show Banner</span>
+                </div>
+                <div class="toggle-wrap">
+                    <div class="toggle" id="toggleTutorial" onclick="toggleSetting('tutorial_enabled')"></div>
+                    <span class="toggle-label">Show Tutorial</span>
+                </div>
+                <div class="form-group" style="margin-top:12px;">
+                    <label class="form-label">Banner Text</label>
+                    <input type="text" class="form-input" id="bannerText" placeholder="Enter banner text" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tutorial URL</label>
+                    <input type="text" class="form-input" id="tutorialUrl" placeholder="https://youtube.com/watch?v=..." />
+                </div>
+                <button class="btn btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> Save Settings</button>
+            </div>
+        </div>
+
+        <!-- ===== TAB: TOKENS ===== -->
+        <div class="tab-content" id="tab-tokens">
+            <div id="tokenList">
+                <div style="text-align:center;color:var(--text-muted);padding:20px;">
+                    <i class="fas fa-spinner fa-spin"></i> Loading tokens...
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TAB: LOGS ===== -->
+        <div class="tab-content" id="tab-logs">
+            <div id="logList">
+                <div style="text-align:center;color:var(--text-muted);padding:20px;">
+                    <i class="fas fa-spinner fa-spin"></i> Loading logs...
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TAB: ADD USER ===== -->
+        <div class="tab-content" id="tab-adduser">
+            <div style="background:var(--bg-card);border-radius:var(--radius);padding:20px;border:1px solid var(--border-color);">
+                <h3 style="margin-bottom:16px;"><i class="fas fa-user-plus"></i> Create New User</h3>
+                <div class="form-group">
+                    <label class="form-label">Username <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="newUsername" placeholder="Enter username" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password <span class="required">*</span></label>
+                    <input type="password" class="form-input" id="newPassword" placeholder="Enter password" />
+                </div>
+                <div class="toggle-wrap">
+                    <div class="toggle" id="toggleAdmin" onclick="document.getElementById('toggleAdmin').classList.toggle('active')"></div>
+                    <span class="toggle-label">Make Admin</span>
+                </div>
+                <button class="btn btn-success" onclick="addUser()"><i class="fas fa-user-plus"></i> Create User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== BOTTOM NAV ===== -->
+    <nav class="bottom-nav">
+        <button class="nav-item" data-page="users" onclick="switchTab('users')">
+            <i class="fas fa-users"></i>
+            <span>Users</span>
+        </button>
+        <button class="nav-item" data-page="tokens" onclick="switchTab('tokens')">
+            <i class="fas fa-key"></i>
+            <span>Tokens</span>
+        </button>
+        <button class="nav-item nav-center" data-page="dashboard" onclick="goToDashboard()">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" data-page="settings" onclick="switchTab('settings')">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </button>
+        <button class="nav-item" data-page="adduser" onclick="switchTab('adduser')">
+            <i class="fas fa-user-plus"></i>
+            <span>Add</span>
+        </button>
+    </nav>
+
+    <script>
+        // ============================================================
+        // STATE
+        // ============================================================
+        let currentTab = 'users';
+        let username = 'Admin';
+
+        // ============================================================
+        // AUTH CHECK
+        // ============================================================
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/auth/check');
+                const data = await res.json();
+                if (!data.logged_in) {
+                    window.location.href = '/login';
+                    return false;
+                }
+                if (!data.user.is_admin) {
+                    window.location.href = '/dashboard';
+                    return false;
+                }
+                username = data.user.username;
+                document.getElementById('usernameDisplay').textContent = username;
+                return true;
+            } catch (e) {
+                window.location.href = '/login';
+                return false;
+            }
+        }
+
+        // ============================================================
+        // LOGOUT
+        // ============================================================
+        async function handleLogout() {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+                window.location.href = '/login';
+            } catch (e) {
+                window.location.href = '/login';
+            }
+        }
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        function showToast(msg, type = 'info', duration = 4000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle',
+                info: 'fas fa-info-circle'
+            };
+            toast.innerHTML = `
+                <span class="toast-icon"><i class="${icons[type] || icons.info}"></i></span>
+                <span class="toast-content">${msg}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => { if (toast.parentElement) toast.remove(); }, duration);
+        }
+
+        // ============================================================
+        // TAB SWITCHING
+        // ============================================================
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.admin-tab').forEach(el => {
+                el.classList.toggle('active', el.dataset.tab === tab);
+            });
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.toggle('active', el.dataset.page === tab);
+            });
+
+            if (tab === 'users') loadUsers();
+            if (tab === 'tokens') loadTokens();
+            if (tab === 'logs') loadLogs();
+            if (tab === 'settings') loadSettings();
+        }
+
+        function goToDashboard() {
+            window.location.href = '/dashboard';
+        }
+
+        // ============================================================
+        // LOAD STATS
+        // ============================================================
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/admin/stats');
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('statUsers').textContent = data.stats.total_users;
+                    document.getElementById('statTokens').textContent = data.stats.total_tokens;
+                    document.getElementById('statLogs').textContent = data.stats.total_logs;
+                    document.getElementById('statUptime').textContent = data.stats.uptime || 'N/A';
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        // ============================================================
+        // LOAD USERS
+        // ============================================================
+        async function loadUsers() {
+            try {
+                const res = await fetch('/api/auth/users');
+                const data = await res.json();
+                const container = document.getElementById('userList');
+                
+                if (!data.success) {
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">❌ Failed to load users</div>`;
+                    return;
+                }
+
+                const users = data.users;
+                if (Object.keys(users).length === 0) {
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">📭 No users found</div>`;
+                    return;
+                }
+
+                let html = '';
+                for (const [uname, info] of Object.entries(users)) {
+                    const isAdmin = info.is_admin || false;
+                    const isActive = info.active !== false;
+                    const created = info.created_at ? new Date(info.created_at).toLocaleDateString() : 'N/A';
+                    html += `
+                        <div class="user-item">
+                            <div class="user-info">
+                                <div class="user-name">
+                                    ${uname}
+                                    ${isAdmin ? '<span class="admin-tag">ADMIN</span>' : ''}
+                                </div>
+                                <div class="user-meta">
+                                    Created: ${created} · ${isActive ? '🟢 Active' : '🔴 Banned'}
+                                </div>
+                            </div>
+                            <div class="user-actions">
+                                ${isActive ? 
+                                    `<button class="btn-ban btn-sm" onclick="banUser('${uname}')">Ban</button>` :
+                                    `<button class="btn-unban btn-sm" onclick="unbanUser('${uname}')">Unban</button>`
+                                }
+                                ${!isAdmin && uname !== 'admin' ? 
+                                    `<button class="btn-delete btn-sm" onclick="deleteUser('${uname}')">Delete</button>` : ''
+                                }
+                            </div>
+                        </div>
+                    `;
+                }
+                container.innerHTML = html;
+            } catch (e) {
+                document.getElementById('userList').innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">❌ Error loading users</div>`;
+            }
+        }
+
+        // ============================================================
+        // USER ACTIONS
+        // ============================================================
+        async function banUser(username) {
+            if (!confirm(`Ban user "${username}"?`)) return;
+            try {
+                const res = await fetch(`/api/auth/users/${username}/ban`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`User "${username}" banned`, 'success');
+                    loadUsers();
+                    loadStats();
+                } else {
+                    showToast(data.error || 'Failed to ban user', 'error');
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, 'error');
+            }
+        }
+
+        async function unbanUser(username) {
+            if (!confirm(`Unban user "${username}"?`)) return;
+            try {
+                const res = await fetch(`/api/auth/users/${username}/unban`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`User "${username}" unbanned`, 'success');
+                    loadUsers();
+                    loadStats();
+                } else {
+                    showToast(data.error || 'Failed to unban user', 'error');
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, 'error');
+            }
+        }
+
+        async function deleteUser(username) {
+            if (!confirm(`Delete user "${username}" permanently?`)) return;
+            try {
+                const res = await fetch(`/api/auth/users/${username}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`User "${username}" deleted`, 'success');
+                    loadUsers();
+                    loadStats();
+                } else {
+                    showToast(data.error || 'Failed to delete user', 'error');
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // ADD USER
+        // ============================================================
+        async function addUser() {
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value.trim();
+            const isAdmin = document.getElementById('toggleAdmin').classList.contains('active');
+
+            if (!username || !password) {
+                return showToast('Username and password required', 'error');
+            }
+            if (password.length < 4) {
+                return showToast('Password must be at least 4 characters', 'error');
+            }
+
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Creating...';
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, is_admin: isAdmin })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`User "${username}" created!`, 'success');
+                    document.getElementById('newUsername').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('toggleAdmin').classList.remove('active');
+                    loadUsers();
+                    loadStats();
+                } else {
+                    showToast(data.error || 'Failed to create user', 'error');
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, 'error');
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-user-plus"></i> Create User';
+        }
+
+        // ============================================================
+        // LOAD SETTINGS
+        // ============================================================
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/admin/settings');
+                const data = await res.json();
+                if (data.success) {
+                    const s = data.settings;
+                    document.getElementById('toggleMaintenance').classList.toggle('active', s.maintenance === true);
+                    document.getElementById('toggleBanner').classList.toggle('active', s.banner_enabled !== false);
+                    document.getElementById('toggleTutorial').classList.toggle('active', s.tutorial_enabled !== false);
+                    document.getElementById('bannerText').value = s.banner_text || '';
+                    document.getElementById('tutorialUrl').value = s.tutorial_url || '';
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        function toggleSetting(key) {
+            const el = document.getElementById(`toggle${key.charAt(0).toUpperCase() + key.slice(1)}`);
+            el.classList.toggle('active');
+        }
+
+        async function saveSettings() {
+            const settings = {
+                maintenance: document.getElementById('toggleMaintenance').classList.contains('active'),
+                banner_enabled: document.getElementById('toggleBanner').classList.contains('active'),
+                tutorial_enabled: document.getElementById('toggleTutorial').classList.contains('active'),
+                banner_text: document.getElementById('bannerText').value.trim(),
+                tutorial_url: document.getElementById('tutorialUrl').value.trim()
+            };
+
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Saving...';
+
+            try {
+                const res = await fetch('/api/admin/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Settings saved!', 'success');
+                } else {
+                    showToast(data.error || 'Failed to save settings', 'error');
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, 'error');
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Save Settings';
+        }
+
+        // ============================================================
+        // LOAD TOKENS
+        // ============================================================
+        async function loadTokens() {
+            try {
+                const res = await fetch('/api/admin/tokens');
+                const data = await res.json();
+                const container = document.getElementById('tokenList');
+                
+                if (!data.success || !data.tokens || data.tokens.length === 0) {
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">📭 No tokens captured</div>`;
+                    return;
+                }
+
+                let html = '';
+                data.tokens.forEach(t => {
+                    const time = new Date(t.timestamp).toLocaleString();
+                    html += `
+                        <div class="log-item">
+                            <div><span class="log-action">${t.action}</span> · <span class="log-user">${t.user_id}</span></div>
+                            <div style="font-size:10px;color:var(--text-muted);word-break:break-all;margin-top:4px;">
+                                <code style="background:var(--bg-input);padding:2px 6px;border-radius:4px;font-size:10px;">${t.token}</code>
+                            </div>
+                            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">
+                                ${time} ${t.email ? '· 📧 ' + t.email : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch (e) {
+                document.getElementById('tokenList').innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">❌ Error loading tokens</div>`;
+            }
+        }
+
+        // ============================================================
+        // LOAD LOGS
+        // ============================================================
+        async function loadLogs() {
+            try {
+                const res = await fetch('/api/admin/logs');
+                const data = await res.json();
+                const container = document.getElementById('logList');
+                
+                if (!data.success || !data.logs || data.logs.length === 0) {
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">📭 No logs found</div>`;
+                    return;
+                }
+
+                let html = '';
+                data.logs.slice().reverse().forEach(l => {
+                    const time = new Date(l.timestamp).toLocaleString();
+                    html += `
+                        <div class="log-item">
+                            <div><span class="log-action">${l.action}</span> · <span class="log-user">${l.user_id}</span></div>
+                            <div style="font-size:10px;color:var(--text-muted);">${time} ${l.details ? '· ' + l.details : ''}</div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch (e) {
+                document.getElementById('logList').innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">❌ Error loading logs</div>`;
+            }
+        }
+
+        // ============================================================
+        // TAB CLICK HANDLERS
+        // ============================================================
+        document.querySelectorAll('.admin-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.dataset.tab);
+            });
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            const loggedIn = await checkAuth();
+            if (!loggedIn) return;
+
+            loadStats();
+            loadUsers();
+            loadSettings();
+            
+            // Auto-load current tab content
+            switchTab('users');
+        });
+
+        console.log('🔥 FF Tools Pro Admin Panel v2.0');
+        console.log('👑 Logged in as:', username);
+    </script>
+</body>
+</html>
