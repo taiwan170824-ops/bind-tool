@@ -1,0 +1,2983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Dashboard - FF Tools Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #60a5fa;
+            --primary-glow: rgba(37, 99, 235, 0.4);
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #111118;
+            --bg-card: #161620;
+            --bg-card-hover: #1e1e2a;
+            --bg-input: #1a1a25;
+            --text-primary: #f0eeff;
+            --text-secondary: #a8a0c8;
+            --text-muted: #6a6288;
+            --border-color: #2a2a3a;
+            --border-light: #3a3a4a;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 8px 32px rgba(37, 99, 235, 0.3);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --nav-height: 72px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: calc(var(--nav-height) + 20px);
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.7); }
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
+            50% { box-shadow: 0 0 50px var(--primary-glow); }
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes borderGlow {
+            0%, 100% { border-color: var(--border-color); }
+            50% { border-color: var(--primary); }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .fade-in { animation: fadeIn 0.5s ease forwards; }
+        .fade-up { animation: fadeInUp 0.6s ease forwards; }
+        .bounce-in { animation: bounceIn 0.5s ease forwards; }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #2563eb, #60a5fa, #2563eb);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 3s ease infinite;
+        }
+
+        /* ===== HEADER ===== */
+        .app-header {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 20px 10px;
+            border-bottom: 2px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideDown 0.5s ease;
+        }
+        .header-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .logo-section:hover { transform: scale(1.02); }
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 900;
+            color: #fff;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            animation: glow 2s infinite;
+            position: relative;
+        }
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 16px;
+            border: 2px solid var(--primary);
+            opacity: 0.3;
+            animation: pulse-dot 2s infinite;
+        }
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .logo-sub {
+            font-size: 9px;
+            font-weight: 500;
+            color: var(--text-muted);
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .user-badge {
+            background: rgba(37, 99, 235, 0.15);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--primary-light);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .user-badge:hover {
+            background: rgba(37, 99, 235, 0.25);
+        }
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: #ef4444;
+            color: #ef4444;
+            transform: rotate(90deg);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+        }
+        .theme-toggle-wrap .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .theme-toggle {
+            width: 48px;
+            height: 26px;
+            background: var(--border-color);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            flex-shrink: 0;
+        }
+        .theme-toggle.active {
+            background: var(--primary);
+        }
+        .theme-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            background: #fff;
+            border-radius: 50%;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .theme-toggle.active::after {
+            left: 24px;
+            background: #fff;
+        }
+        .theme-toggle .icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .theme-toggle .icon.sun { left: 4px; color: #fbbf24; }
+        .theme-toggle .icon.moon { right: 4px; color: #93c5fd; }
+        .theme-toggle.active .icon.sun { color: #fbbf24; }
+        .theme-toggle.active .icon.moon { color: #93c5fd; }
+
+        /* ===== BANNER ===== */
+        .banner-wrap {
+            margin-bottom: 20px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            cursor: pointer;
+            display: none;
+        }
+        .banner-wrap:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+        .banner-wrap img {
+            width: 100%;
+            display: block;
+            aspect-ratio: 16/6;
+            object-fit: cover;
+        }
+        .banner-wrap.show {
+            display: block;
+        }
+
+        /* ===== STATUS BAR ===== */
+        .status-bar {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            animation: fadeInUp 0.6s ease;
+            transition: var(--transition);
+        }
+        .status-bar:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 16px rgba(34, 197, 94, 0.4);
+            animation: pulse-dot 2s infinite;
+        }
+        .status-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .status-label span {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .status-version {
+            font-size: 10px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .status-version:hover {
+            border-color: var(--primary-light);
+            color: var(--text-secondary);
+        }
+
+        /* ===== FEATURE GRID ===== */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 420px) {
+            .feature-grid { grid-template-columns: 1fr; }
+        }
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 18px 16px 16px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease backwards;
+        }
+        .feature-card:nth-child(1) { animation-delay: 0.05s; }
+        .feature-card:nth-child(2) { animation-delay: 0.1s; }
+        .feature-card:nth-child(3) { animation-delay: 0.15s; }
+        .feature-card:nth-child(4) { animation-delay: 0.2s; }
+        .feature-card:nth-child(5) { animation-delay: 0.25s; }
+        .feature-card:nth-child(6) { animation-delay: 0.3s; }
+        .feature-card:nth-child(7) { animation-delay: 0.35s; }
+        .feature-card:nth-child(8) { animation-delay: 0.4s; }
+        .feature-card:nth-child(9) { animation-delay: 0.45s; }
+        .feature-card:nth-child(10) { animation-delay: 0.5s; }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light), var(--primary));
+            background-size: 200% 100%;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .feature-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: var(--shadow-glow);
+        }
+        .feature-card:hover::before {
+            opacity: 1;
+            animation: shimmer 1.5s ease infinite;
+        }
+        .feature-card:active { transform: scale(0.97); }
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 10px;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-light);
+            transition: var(--transition);
+        }
+        .feature-card:hover .feature-icon {
+            background: rgba(37, 99, 235, 0.2);
+            transform: scale(1.1) rotate(-5deg);
+        }
+        .feature-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+        .feature-desc {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+        .feature-badge {
+            display: inline-block;
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary-light);
+            background: rgba(37, 99, 235, 0.12);
+            padding: 2px 10px;
+            border-radius: 10px;
+            margin-top: 4px;
+            transition: var(--transition);
+        }
+        .feature-card:hover .feature-badge {
+            background: rgba(37, 99, 235, 0.2);
+        }
+
+        /* ===== BIND INFO RESPONSE ===== */
+        .response-box {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 0;
+            margin-top: 16px;
+            border: 2px solid var(--border-color);
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease;
+            transition: var(--transition);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .response-box::-webkit-scrollbar { width: 3px; }
+        .response-box::-webkit-scrollbar-track { background: var(--bg-primary); }
+        .response-box::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        .response-box.success {
+            border-color: #22c55e;
+            box-shadow: 0 0 40px rgba(34, 197, 94, 0.08);
+        }
+        .response-box.error {
+            border-color: #ef4444;
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.08);
+        }
+        .response-box.loading {
+            border-color: var(--primary);
+            border-style: dashed;
+            animation: borderGlow 1.5s ease-in-out infinite;
+        }
+
+        .res-header {
+            padding: 16px 20px 12px;
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(37, 99, 235, 0.04);
+        }
+        .res-header .res-icon { font-size: 20px; }
+        .res-header .res-icon.success { color: #22c55e; }
+        .res-header .res-icon.error { color: #ef4444; }
+        .res-header .res-icon.info { color: var(--primary-light); }
+        .res-header .res-status {
+            margin-left: auto;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        .res-header .res-status.success {
+            color: #22c55e;
+            border-color: rgba(34, 197, 94, 0.2);
+            background: rgba(34, 197, 94, 0.05);
+        }
+        .res-header .res-status.error {
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.2);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .res-body { padding: 16px 20px 20px; }
+        .res-account-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: var(--transition);
+        }
+        .res-account-card:hover { border-color: var(--border-light); }
+        .res-account-card .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .res-account-card .info { flex: 1; }
+        .res-account-card .info .name { font-size: 15px; font-weight: 700; }
+        .res-account-card .info .uid { font-size: 11px; color: var(--text-muted); }
+        .res-account-card .region-badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 12px;
+            background: rgba(37, 99, 235, 0.12);
+            color: var(--primary-light);
+            border: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .res-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        @media (max-width: 420px) {
+            .res-details { grid-template-columns: 1fr; }
+        }
+        .res-detail-item {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .res-detail-item:hover { border-color: var(--border-light); }
+        .res-detail-item .label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .res-detail-item .value {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 2px;
+            word-break: break-all;
+        }
+        .res-detail-item .value.email { color: var(--primary-light); }
+        .res-detail-item .value.status-bound { color: #22c55e; }
+        .res-detail-item .value.status-unbound { color: var(--text-muted); }
+        .res-detail-item .value.status-pending { color: #eab308; }
+        .res-detail-item .value.status-changing { color: #3b82f6; }
+
+        .res-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .res-status-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 1.5s infinite;
+        }
+        .res-status-badge.bound {
+            background: rgba(34, 197, 94, 0.12);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.15);
+        }
+        .res-status-badge.bound .dot { background: #22c55e; }
+        .res-status-badge.unbound {
+            background: rgba(107, 114, 128, 0.12);
+            color: var(--text-muted);
+            border: 1px solid rgba(107, 114, 128, 0.15);
+        }
+        .res-status-badge.unbound .dot { background: var(--text-muted); }
+        .res-status-badge.pending {
+            background: rgba(234, 179, 8, 0.12);
+            color: #eab308;
+            border: 1px solid rgba(234, 179, 8, 0.15);
+        }
+        .res-status-badge.pending .dot { background: #eab308; }
+        .res-status-badge.changing {
+            background: rgba(59, 130, 246, 0.12);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.15);
+        }
+        .res-status-badge.changing .dot { background: #3b82f6; }
+
+        .res-error-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: rgba(239, 68, 68, 0.05);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+        }
+        .res-error-box .error-icon { font-size: 28px; color: #ef4444; }
+        .res-error-box .error-text { font-size: 14px; color: var(--text-secondary); }
+        .res-error-box .error-text strong { color: #ef4444; }
+
+        .res-skeleton { padding: 20px; }
+        .res-skeleton .line {
+            height: 12px;
+            background: var(--bg-input);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            animation: shimmer 1.5s ease infinite;
+            background-size: 200% 100%;
+            background-image: linear-gradient(90deg, var(--bg-input) 0%, var(--bg-card-hover) 50%, var(--bg-input) 100%);
+        }
+        .res-skeleton .line:last-child { margin-bottom: 0; }
+        .res-skeleton .line.short { width: 60%; }
+        .res-skeleton .line.medium { width: 80%; }
+
+        /* ===== FORM PAGES ===== */
+        .form-page { animation: fadeInUp 0.5s ease; }
+        .page-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .page-title i { animation: float 3s ease-in-out infinite; }
+        .page-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+            animation: fadeIn 0.4s ease;
+        }
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .form-label .required { color: #ef4444; }
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            outline: none;
+        }
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+            transform: translateY(-1px);
+        }
+        .form-input::placeholder {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .form-input select {
+            appearance: none;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.05));
+            pointer-events: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 8px 35px var(--primary-glow);
+        }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-light);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.25);
+        }
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(220, 38, 38, 0.35);
+        }
+        .btn .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+        }
+
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.4s ease;
+        }
+        .step-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            border: 2px solid var(--border-color);
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+        .step-dot.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 25px var(--primary-glow);
+            transform: scale(1.1);
+        }
+        .step-dot.done {
+            background: #22c55e;
+            border-color: #22c55e;
+            color: #fff;
+        }
+        .step-dot.done::after { content: '✓'; }
+        .step-dot.done span { display: none; }
+        .step-line {
+            flex: 1;
+            height: 3px;
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+        .step-line.done {
+            background: linear-gradient(90deg, #22c55e, var(--primary-light));
+        }
+        .step-text {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-left: 4px;
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: rgba(10, 10, 15, 0.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 8px;
+            z-index: 1000;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: slideDown 0.5s ease;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 6px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            min-width: 48px;
+            position: relative;
+        }
+        .nav-item i { font-size: 18px; transition: var(--transition); }
+        .nav-item span { font-size: 8px; font-weight: 600; transition: var(--transition); }
+        .nav-item:hover { color: var(--text-secondary); }
+        .nav-item.active {
+            color: var(--primary-light);
+        }
+        .nav-item.active i { transform: translateY(-2px) scale(1.1); }
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 0 0 4px 4px;
+        }
+        .nav-center {
+            position: relative;
+            top: -16px;
+        }
+        .nav-center .nav-item {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 50px;
+            box-shadow: 0 4px 30px var(--primary-glow);
+            min-width: auto;
+            animation: glow 2s infinite;
+        }
+        .nav-center .nav-item i { font-size: 22px; }
+        .nav-center .nav-item span { color: #fff; font-size: 9px; }
+        .nav-center .nav-item:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 8px 40px var(--primary-glow);
+        }
+        .nav-center .nav-item:active { transform: scale(0.95); }
+        .nav-center .nav-item::before { display: none; }
+        .nav-center .nav-item.active { color: #fff; }
+        
+        /* Access Token Button - Normal like others */
+        .nav-item.access-token-btn {
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid rgba(37, 99, 235, 0.15);
+            color: var(--primary-light);
+            padding: 6px 10px;
+            border-radius: 12px;
+            min-width: 48px;
+        }
+        .nav-item.access-token-btn:hover {
+            background: rgba(37, 99, 235, 0.2);
+            border-color: var(--primary);
+        }
+        .nav-item.access-token-btn i { color: var(--primary-light); }
+        .nav-item.access-token-btn.active::before { display: none; }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 16px;
+            left: 16px;
+            max-width: 400px;
+            margin: 0 auto;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            pointer-events: auto;
+            animation: slideDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+        }
+        .toast.success { border-left-color: #22c55e; }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.warning { border-left-color: #eab308; }
+        .toast-icon { font-size: 18px; flex-shrink: 0; animation: bounceIn 0.5s ease; }
+        .toast.success .toast-icon { color: #22c55e; }
+        .toast.error .toast-icon { color: #ef4444; }
+        .toast-content { flex: 1; font-size: 13px; font-weight: 500; }
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            transition: var(--transition);
+        }
+        .toast-close:hover { color: #fff; transform: rotate(90deg); }
+
+        /* ===== MODAL / POPUP ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            max-width: 440px;
+            width: 90%;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow);
+            animation: scaleIn 0.3s ease;
+            position: relative;
+        }
+        .modal-content:hover {
+            border-color: var(--primary);
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .modal-header i {
+            font-size: 28px;
+        }
+        .modal-header.success i { color: #22c55e; }
+        .modal-header.warning i { color: #eab308; }
+        .modal-header.danger i { color: #ef4444; }
+        .modal-header.info i { color: var(--primary-light); }
+        .modal-body {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            padding: 4px 0 20px;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .modal-footer .btn {
+            padding: 10px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            width: auto;
+        }
+        .modal-footer .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+        }
+        .modal-footer .btn-primary:hover {
+            transform: scale(1.05);
+        }
+
+        /* ===== PROFILE CARD ===== */
+        .profile-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: var(--transition);
+        }
+        .profile-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto 16px;
+            box-shadow: 0 8px 32px var(--primary-glow);
+            transition: var(--transition);
+        }
+        .profile-card:hover .profile-avatar { transform: scale(1.05) rotate(-5deg); }
+        .profile-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-light);
+        }
+        .profile-role {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin: 4px 0 12px;
+        }
+        .profile-tags {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .profile-tags span {
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .profile-tags span:hover { transform: translateY(-2px); }
+        .tag-premium {
+            background: rgba(37, 99, 235, 0.15);
+            color: var(--primary-light);
+            border-color: rgba(37, 99, 235, 0.2);
+        }
+        .tag-secure {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border-color: rgba(34, 197, 94, 0.15);
+        }
+        .tag-admin {
+            background: rgba(168, 85, 247, 0.1);
+            color: #a855f7;
+            border-color: rgba(168, 85, 247, 0.15);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 420px) {
+            .logo-text { font-size: 17px; }
+            .logo-icon { width: 38px; height: 38px; font-size: 17px; }
+            .page-title { font-size: 20px; }
+            .container { padding: 12px; }
+            .bottom-nav { padding: 0 4px; }
+            .nav-item { padding: 4px 8px; min-width: 40px; }
+            .nav-item i { font-size: 16px; }
+            .nav-item span { font-size: 7px; }
+            .nav-center .nav-item { padding: 8px 14px; }
+            .nav-center .nav-item i { font-size: 18px; }
+            .modal-content { padding: 24px 18px; }
+            .step-indicator { padding: 10px 12px; }
+            .step-dot { width: 28px; height: 28px; font-size: 11px; }
+            .user-badge span { display: none; }
+            .banner-wrap img { aspect-ratio: 16/6; }
+            .theme-toggle-wrap { padding: 6px 12px; }
+        }
+        @media (min-width: 601px) {
+            body {
+                padding-left: calc(50% - 300px);
+                padding-right: calc(50% - 300px);
+            }
+            .bottom-nav {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ===== ORANGE THEME ===== */
+        body.theme-orange {
+            --primary: #ff6b00;
+            --primary-dark: #cc5500;
+            --primary-light: #ff8c38;
+            --primary-glow: rgba(255, 107, 0, 0.4);
+            --shadow-glow: 0 8px 32px rgba(255, 107, 0, 0.3);
+        }
+        body.theme-orange .text-gradient {
+            background: linear-gradient(135deg, #ff6b00, #ff8c38, #ffb06b, #ff6b00);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientMove 4s ease infinite;
+        }
+        body.theme-orange .app-header {
+            border-bottom-color: #ff6b00;
+        }
+        body.theme-orange .bottom-nav {
+            border-top-color: #ff6b00;
+        }
+        body.theme-orange .nav-item.access-token-btn {
+            background: rgba(255, 107, 0, 0.1);
+            border-color: rgba(255, 107, 0, 0.15);
+            color: #ff8c38;
+        }
+        body.theme-orange .nav-item.access-token-btn:hover {
+            background: rgba(255, 107, 0, 0.2);
+            border-color: #ff6b00;
+        }
+        body.theme-orange .nav-item.access-token-btn i { color: #ff8c38; }
+        body.theme-orange .theme-toggle.active {
+            background: #ff6b00;
+        }
+        body.theme-orange .feature-card::before {
+            background: linear-gradient(90deg, #ff6b00, #ff8c38, #ff6b00);
+        }
+        body.theme-orange .feature-icon {
+            background: rgba(255, 107, 0, 0.1);
+            color: #ff8c38;
+        }
+        body.theme-orange .feature-card:hover .feature-icon {
+            background: rgba(255, 107, 0, 0.2);
+        }
+        body.theme-orange .feature-badge {
+            color: #ff8c38;
+            background: rgba(255, 107, 0, 0.12);
+        }
+        body.theme-orange .btn-primary {
+            background: linear-gradient(135deg, #ff6b00, #cc5500);
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.4);
+        }
+        body.theme-orange .btn-primary:hover {
+            box-shadow: 0 8px 35px rgba(255, 107, 0, 0.4);
+        }
+        body.theme-orange .logo-icon {
+            background: linear-gradient(135deg, #ff6b00, #cc5500);
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.4);
+        }
+        body.theme-orange .logo-icon::after {
+            border-color: #ff6b00;
+        }
+        body.theme-orange .status-bar:hover {
+            border-color: #ff6b00;
+            box-shadow: 0 8px 32px rgba(255, 107, 0, 0.3);
+        }
+        body.theme-orange .banner-wrap:hover {
+            border-color: #ff6b00;
+            box-shadow: 0 8px 32px rgba(255, 107, 0, 0.3);
+        }
+        body.theme-orange .step-dot.active {
+            background: #ff6b00;
+            border-color: #ff6b00;
+            box-shadow: 0 0 25px rgba(255, 107, 0, 0.4);
+        }
+        body.theme-orange .nav-center .nav-item {
+            background: linear-gradient(135deg, #ff6b00, #cc5500);
+            box-shadow: 0 4px 30px rgba(255, 107, 0, 0.4);
+        }
+        body.theme-orange .nav-center .nav-item:hover {
+            box-shadow: 0 8px 40px rgba(255, 107, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="header-content">
+            <a href="/" class="logo-section" onclick="navigateTo('home')">
+                <div class="logo-icon">🔥</div>
+                <div>
+                    <div class="logo-text text-gradient">FF Tools Pro</div>
+                    <div class="logo-sub">Dashboard</div>
+                </div>
+            </a>
+            <div class="header-actions">
+                <div class="user-badge" onclick="navigateTo('profile')">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="usernameDisplay">User</span>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ===== BROADCAST MODAL ===== -->
+    <div class="modal-overlay" id="broadcastModal">
+        <div class="modal-content">
+            <div class="modal-header info" id="broadcastHeader">
+                <i class="fas fa-bullhorn" id="broadcastIcon"></i>
+                <span id="broadcastTitle">Announcement</span>
+            </div>
+            <div class="modal-body" id="broadcastMessage">
+                Message here
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeBroadcast()">
+                    <i class="fas fa-check"></i> Got it
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CONTAINER ===== -->
+    <div class="container" id="appContainer">
+
+        <!-- ===== THEME TOGGLE ===== -->
+        <div class="theme-toggle-wrap">
+            <span class="label"><i class="fas fa-palette"></i> Theme</span>
+            <div class="theme-toggle active" id="themeToggle" onclick="toggleTheme()">
+                <span class="icon sun"><i class="fas fa-sun"></i></span>
+                <span class="icon moon"><i class="fas fa-moon"></i></span>
+            </div>
+        </div>
+
+        <!-- ===== BANNER ===== -->
+        <div class="banner-wrap" id="bannerWrap">
+            <img id="bannerImage" src="" alt="Banner" onclick="openBannerLink()" />
+        </div>
+
+        <!-- ============================================================
+        HOME PAGE
+        ============================================================ -->
+        <div id="page-home" class="page-content">
+
+            <!-- STATUS BAR -->
+            <div class="status-bar">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <div class="status-label"><span>●</span> System Ready</div>
+                </div>
+                <div class="status-version"><i class="fas fa-shield-alt"></i> Secure</div>
+            </div>
+
+            <!-- FEATURE GRID -->
+            <div class="feature-grid">
+                <div class="feature-card" onclick="navigateTo('bind-info')">
+                    <div class="feature-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="feature-title">Check Bind Info</div>
+                    <div class="feature-desc">View current email &amp; bind status</div>
+                </div>
+                <div class="feature-card" onclick="navigateTo('bind-email')">
+                    <div class="feature-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="feature-title">Bind Email</div>
+                    <div class="feature-desc">Link a new email to account</div>
+                    <span class="feature-badge">OTP</span>
+                </div>
+                <div class="feature-card" onclick="navigateTo('unbind-email')">
+                    <div class="feature-icon"><i class="fas fa-unlink"></i></div>
+                    <div class="feature-title">Unbind Email</div>
+                    <div class="feature-desc">Remove bound email</div>
+                    <span class="feature-badge">OTP/Code</span>
+                </div>
+                <div class="feature-card" onclick="navigateTo('change-bind')">
+                    <div class="feature-icon"><i class="fas fa-exchange-alt"></i></div>
+                    <div class="feature-title">Change Bind</div>
+                    <div class="feature-desc">Replace bound email</div>
+                    <span class="feature-badge">OTP/Code</span>
+                </div>
+                <div class="feature-card" onclick="navigateTo('cancel-bind')">
+                    <div class="feature-icon"><i class="fas fa-times-circle"></i></div>
+                    <div class="feature-title">Cancel Bind</div>
+                    <div class="feature-desc">Cancel pending request</div>
+                </div>
+                <div class="feature-card" onclick="navigateTo('eat-to-token')">
+                    <div class="feature-icon"><i class="fas fa-key"></i></div>
+                    <div class="feature-title">EAT → Access Token</div>
+                    <div class="feature-desc">Convert EAT to Access Token</div>
+                    <span class="feature-badge">Convert</span>
+                </div>
+                <div class="feature-card" onclick="navigateTo('revoke-token')">
+                    <div class="feature-icon"><i class="fas fa-skull"></i></div>
+                    <div class="feature-title">Revoke Token</div>
+                    <div class="feature-desc">Logout &amp; revoke access</div>
+                    <span class="feature-badge">Danger</span>
+                </div>
+                <div class="feature-card" onclick="navigateTo('login-history')">
+                    <div class="feature-icon"><i class="fas fa-history"></i></div>
+                    <div class="feature-title">Login History</div>
+                    <div class="feature-desc">View recent login records</div>
+                    <span class="feature-badge">JWT</span>
+                </div>
+                <div class="feature-card" onclick="navigateTo('bound-accounts')">
+                    <div class="feature-icon"><i class="fas fa-users"></i></div>
+                    <div class="feature-title">Bound Platforms</div>
+                    <div class="feature-desc">Check third-party binds</div>
+                </div>
+                <div class="feature-card" onclick="navigateTo('profile')">
+                    <div class="feature-icon"><i class="fas fa-user"></i></div>
+                    <div class="feature-title">My Profile</div>
+                    <div class="feature-desc">Account settings &amp; info</div>
+                    <span class="feature-badge">⭐</span>
+                </div>
+            </div>
+            <div style="text-align:center;color:var(--text-muted);font-size:12px;padding:16px 0;">
+                <i class="fas fa-lock" style="color:var(--primary-light);"></i> Secured by FF Tools Pro v2.0
+            </div>
+        </div>
+
+        <!-- ============================================================
+        BIND INFO PAGE
+        ============================================================ -->
+        <div id="page-bind-info" class="page-content hidden">
+            <div class="form-page">
+                <h2 class="page-title"><i class="fas fa-info-circle"></i> Check Bind Info</h2>
+                <p class="page-subtitle">View current email and bind status</p>
+                <div class="form-group">
+                    <label class="form-label">Access Token <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="bindInfoToken" placeholder="Enter your Access Token" />
+                </div>
+                <button class="btn btn-primary" id="bindInfoBtn" onclick="getBindInfo()"><i class="fas fa-search"></i> Fetch Info</button>
+                <div id="bindInfoResult" class="response-box hidden"></div>
+                <button class="btn btn-secondary" style="margin-top:12px;" onclick="navigateTo('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        BIND EMAIL PAGE
+        ============================================================ -->
+        <div id="page-bind-email" class="page-content hidden">
+            <div class="form-page">
+                <h2 class="page-title"><i class="fas fa-envelope"></i> Bind Email</h2>
+                <p class="page-subtitle">Link a new email to your account</p>
+                <div class="step-indicator" id="bindSteps">
+                    <div class="step-dot active" id="bs1"><span>1</span></div>
+                    <div class="step-line" id="bl1"></div>
+                    <div class="step-dot" id="bs2"><span>2</span></div>
+                    <div class="step-line" id="bl2"></div>
+                    <div class="step-dot" id="bs3"><span>3</span></div>
+                    <span class="step-text" id="bindStepLabel">Send OTP</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Access Token <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="bindEmailToken" placeholder="Enter Access Token" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address <span class="required">*</span></label>
+                    <input type="email" class="form-input" id="bindEmailAddr" placeholder="example@email.com" />
+                </div>
+                <div class="form-group" id="bindOtpGroup" style="display:none;">
+                    <label class="form-label">OTP Code <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="bindOtpCode" placeholder="Enter OTP" maxlength="8" />
+                </div>
+                <div class="form-group" id="bindSecurityGroup" style="display:none;">
+                    <label class="form-label">Security Code <span class="required">*</span></label>
+                    <input type="password" class="form-input" id="bindSecurityCode" placeholder="Set 6-digit security code" maxlength="6" />
+                </div>
+                <button class="btn btn-primary" id="bindEmailBtn" onclick="handleBindEmail()">
+                    <i class="fas fa-paper-plane"></i> <span id="bindEmailBtnText">Send OTP</span>
+                </button>
+                <div id="bindEmailResult" class="response-box hidden"></div>
+                <button class="btn btn-secondary" style="margin-top:12px;" onclick="navigateTo('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        UNBIND EMAIL PAGE
+        ============================================================ -->
+        <div id="page-unbind-email" class="page-content hidden">
+            <div class="form-page">
+                <h2 class="page-title"><i class="fas fa-unlink"></i> Unbind Email</h2>
+                <p class="page-subtitle">Remove the currently bound email</p>
+
+                <div class="step-indicator" id="unbindSteps">
+                    <div class="step-dot active" id="us1"><span>1</span></div>
+                    <div class="step-line" id="ul1"></div>
+                    <div class="step-dot" id="us2"><span>2</span></div>
+                    <div class="step-line" id="ul2"></div>
+                    <div class="step-dot" id="us3"><span>3</span></div>
+                    <span class="step-text" id="unbindStepLabel">Enter Details</span>
+                </div>
+
+                <div id="unbindStep1">
+                    <div class="form-group">
+                        <label class="form-label">Access Token <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="unbindToken" placeholder="Enter Access Token" />
+                    </div>
+                    <div class="form-group" id="unbindMethodGroup">
+                        <label class="form-label">Verification Method</label>
+                        <select class="form-input" id="unbindMethod" onchange="unbindMethodChange()">
+                            <option value="otp">OTP (Email)</option>
+                            <option value="code">Security Code</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="unbindOtpSection">
+                    <div class="form-group" id="unbindEmailGroup">
+                        <label class="form-label">Current Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="unbindEmail" placeholder="Enter current bound email" />
+                    </div>
+                    <div class="form-group" id="unbindOtpGroup" style="display:none;">
+                        <label class="form-label">OTP from Email <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="unbindOtp" placeholder="Enter OTP" maxlength="8" />
+                    </div>
+                </div>
+
+                <div id="unbindCodeSection" style="display:none;">
+                    <div class="form-group" id="unbindCodeEmailGroup">
+                        <label class="form-label">Current Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="unbindCodeEmail" placeholder="Enter current bound email" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Security Code <span class="required">*</span></label>
+                        <input type="password" class="form-input" id="unbindCode" placeholder="Enter 6-digit security code" maxlength="6" />
+                    </div>
+                </div>
+
+                <button class="btn btn-danger" id="unbindBtn" onclick="handleUnbind()">
+                    <i class="fas fa-unlink"></i> <span id="unbindBtnText">Unbind Email</span>
+                </button>
+                <div id="unbindResult" class="response-box hidden"></div>
+                <button class="btn btn-secondary" style="margin-top:12px;" onclick="navigateTo('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        CHANGE BIND PAGE
+        ============================================================ -->
+        <div id="page-change-bind" class="page-content hidden">
+            <div class="form-page">
+                <h2 class="page-title"><i class="fas fa-exchange-alt"></i> Change Bind Email</h2>
+                <p class="page-subtitle">Replace current email with a new one</p>
+
+                <div class="step-indicator" id="changeSteps">
+                    <div class="step-dot active" id="cs1"><span>1</span></div>
+                    <div class="step-line" id="cl1"></div>
+                    <div class="step-dot" id="cs2"><span>2</span></div>
+                    <div class="step-line" id="cl2"></div>
+                    <div class="step-dot" id="cs3"><span>3</span></div>
+                    <div class="step-line" id="cl3"></div>
+                    <div class="step-dot" id="cs4"><span>4</span></div>
+                    <span class="step-text" id="changeStepLabel">Enter Details</span>
+                </div>
+
+                <div id="changeStep1">
+                    <div class="form-group">
+                        <label class="form-label">Access Token <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="changeToken" placeholder="Enter Access Token" />
+                    </div>
+                    <div class="form-group" id="changeMethodGroup">
+                        <label class="form-label">Verification Method</label>
+                        <select class="form-input" id="changeMethod" onchange="changeMethodChange()">
+                            <option value="otp">OTP (Current Email)</option>
+                            <option value="code">Security Code</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="changeOtpSection">
+                    <div class="form-group" id="changeCurrentEmailGroup">
+                        <label class="form-label">Current Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="changeCurrentEmail" placeholder="Enter current bound email" />
+                    </div>
+                    <div class="form-group" id="changeOtpGroup" style="display:none;">
+                        <label class="form-label">OTP from Current Email <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="changeOtp" placeholder="Enter OTP" maxlength="8" />
+                    </div>
+                </div>
+
+                <div id="changeCodeSection" style="display:none;">
+                    <div class="form-group" id="changeCodeEmailGroup">
+                        <label class="form-label">Current Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="changeCodeEmail" placeholder="Enter current bound email" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Security Code <span class="required">*</span></label>
+                        <input type="password" class="form-input" id="changeCode" placeholder="Enter 6-digit security code" maxlength="6" />
+                    </div>
+                </div>
+
+                <div id="changeNewEmailSection" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label">New Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="changeNewEmail" placeholder="Enter new email address" />
+                    </div>
+                    <div class="form-group" id="changeNewOtpGroup" style="display:none;">
+                        <label class="form-label">OTP from New Email <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="changeNewOtp" placeholder="Enter OTP" maxlength="8" />
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="changeBtn" onclick="handleChangeBind()">
+                    <i class="fas fa-exchange-alt"></i> <span id="changeBtnText">Change Email</span>
+                </button>
+                <div id="changeResult" class="response-box hidden"></div>
+                <button class="btn btn-secondary" style="margin-top:12px;" onclick="navigateTo('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        CANCEL BIND PAGE
+        ============================================================ -->
+        <div id="page-cancel-bind" class="page-content hidden">
+            <div class="form-page">
+                <h2 class="page-title"><i class="fas fa-times-circle"></i> Cancel Bind Request</h2>
+                <p class="page-subtitle">Cancel a pending email bind request</p>
+                <div class="form-group">
+                    <label class="form-label">Access Token <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="cancelToken" placeholder="Enter Access Token" />
+                </div>
+                <button class="btn btn-secondary" id="cancelBtn" onclick="handleCancelBind()"><i class="fas fa-times"></i> Cancel Request</button>
+                <div id="cancelResult" class="response-box hidden"></div>
+                <button class="btn btn-secondary" style="margin-top:12px;" onclick="navigateTo('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        EAT TO TOKEN PAGE
+        ============================================================ -->
+        <div id="page-eat-to-token" class="page-content hidden">
+            <div class="form-page">
+                <h2 class="page-title"><i class="fas fa-key"></i> EAT → Access Token</h2>
+                <p class="page-subtitle">Convert EAT token or URL to Access Token</p>
+                <div class="form-group">
+                    <label class="form-label">EAT Token or URL <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="eatInput" placeholder="Paste EAT token or full URL" />
+                </div>
+                <button class="btn btn-primary" id="eatBtn" onclick="handleEatToToken()"><i class="fas fa-arrow-right"></i> Convert</button>
+                <div id="eatResult" class="response-box hidden"></div>
+                <button class="btn btn-secondary" style="margin-top:12px;" onclick="navigateTo('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        REVOKE TOKEN PAGE
+        ============================================================ -->
+        <div id="page-revoke-token" class="page-content hidden">
+            <div class="form-page">
+                <h2 class="page-title"><i class="fas fa-skull"></i> Revoke Access Token</h2>
+                <p class="page-subtitle">Logout and permanently revoke the token</p>
+                <div class="form-group">
+                    <label class="form-label">Access Token <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="revokeToken" placeholder="Enter Access Token to revoke" />
+                </div>
+                <button class="btn btn-danger" id="revokeBtn" onclick="handleRevokeToken()"><i class="fas fa-skull"></i> Revoke Token</button>
+                <div id="revokeResult" class="response-box hidden"></div>
+                <button class="btn btn-secondary" style="margin-top:12px;" onclick="navigateTo('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        LOGIN HISTORY PAGE
+        ============================================================ -->
+        <div id="page-login-history" class="page-content hidden">
+            <div class="form-page">
+                <h2 class="page-title"><i class="fas fa-history"></i> Login History</h2>
+                <p class="page-subtitle">View recent login records for the account</p>
+                <div class="form-group">
+                    <label class="form-label">Access Token or JWT <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="historyToken" placeholder="Enter Access Token or JWT" />
+                </div>
+                <button class="btn btn-primary" id="historyBtn" onclick="handleLoginHistory()"><i class="fas fa-history"></i> Fetch History</button>
+                <div id="historyResult" class="response-box hidden"></div>
+                <button class="btn btn-secondary" style="margin-top:12px;" onclick="navigateTo('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        BOUND ACCOUNTS PAGE
+        ============================================================ -->
+        <div id="page-bound-accounts" class="page-content hidden">
+            <div class="form-page">
+                <h2 class="page-title"><i class="fas fa-users"></i> Bound Platforms</h2>
+                <p class="page-subtitle">Check which third-party platforms are bound</p>
+                <div class="form-group">
+                    <label class="form-label">Access Token <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="boundToken" placeholder="Enter Access Token" />
+                </div>
+                <button class="btn btn-primary" id="boundBtn" onclick="handleBoundAccounts()"><i class="fas fa-users"></i> Check Platforms</button>
+                <div id="boundResult" class="response-box hidden"></div>
+                <button class="btn btn-secondary" style="margin-top:12px;" onclick="navigateTo('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        PROFILE PAGE
+        ============================================================ -->
+        <div id="page-profile" class="page-content hidden">
+            <div class="form-page">
+                <h2 class="page-title"><i class="fas fa-user"></i> My Profile</h2>
+                <p class="page-subtitle">Account information &amp; settings</p>
+                <div class="profile-card">
+                    <div class="profile-avatar" id="profileAvatar">👤</div>
+                    <h3 class="profile-name" id="profileUsername">User</h3>
+                    <p class="profile-role"><i class="fas fa-tag"></i> <span id="profileRole">User</span></p>
+                    <div class="profile-tags">
+                        <span class="tag-premium"><i class="fas fa-star"></i> Premium</span>
+                        <span class="tag-secure"><i class="fas fa-shield-alt"></i> Secure</span>
+                        <span class="tag-admin" id="adminTag" style="display:none;"><i class="fas fa-crown"></i> Admin</span>
+                    </div>
+                </div>
+                <button class="btn btn-danger" onclick="handleLogout()" style="margin-top:16px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+                <button class="btn btn-secondary" style="margin-top:12px;" onclick="navigateTo('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== BOTTOM NAV ===== -->
+    <nav class="bottom-nav">
+        <button class="nav-item" data-page="bind-info" onclick="navigateTo('bind-info')">
+            <i class="fas fa-info-circle"></i><span>Bind</span>
+        </button>
+        <button class="nav-item" data-page="login-history" onclick="navigateTo('login-history')">
+            <i class="fas fa-history"></i><span>History</span>
+        </button>
+        <button class="nav-item nav-center" data-page="home" onclick="navigateTo('home')">
+            <i class="fas fa-home"></i><span>Home</span>
+        </button>
+        <button class="nav-item" data-page="bound-accounts" onclick="navigateTo('bound-accounts')">
+            <i class="fas fa-users"></i><span>Platforms</span>
+        </button>
+        <button class="nav-item access-token-btn" onclick="openAccessToken()">
+            <i class="fas fa-key"></i>
+            <span>Access Token</span>
+        </button>
+    </nav>
+
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script>
+        // ============================================================
+        // STATE
+        // ============================================================
+        const state = {
+            currentPage: 'home',
+            history: ['home'],
+            username: 'User',
+            isAdmin: false,
+            currentTheme: 'blue',
+            bannerLink: ''
+        };
+
+        // ============================================================
+        // AUTH CHECK
+        // ============================================================
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/auth/check');
+                const data = await res.json();
+                if (!data.logged_in) {
+                    window.location.href = '/login';
+                    return false;
+                }
+                state.username = data.user.username;
+                state.isAdmin = data.user.is_admin;
+
+                document.getElementById('usernameDisplay').textContent = state.username;
+                document.getElementById('userAvatar').textContent = state.username.charAt(0).toUpperCase();
+                document.getElementById('profileUsername').textContent = state.username;
+                document.getElementById('profileRole').textContent = state.isAdmin ? 'Admin' : 'User';
+                document.getElementById('profileAvatar').textContent = state.username.charAt(0).toUpperCase();
+                if (state.isAdmin) document.getElementById('adminTag').style.display = 'inline-block';
+                return true;
+            } catch (e) {
+                window.location.href = '/login';
+                return false;
+            }
+        }
+
+        // ============================================================
+        // LOGOUT
+        // ============================================================
+        async function handleLogout() {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+                window.location.href = '/login';
+            } catch (e) {
+                window.location.href = '/login';
+            }
+        }
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        function showToast(msg, type = 'info', duration = 4000) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle',
+                info: 'fas fa-info-circle'
+            };
+            toast.innerHTML = `
+                <span class="toast-icon"><i class="${icons[type] || icons.info}"></i></span>
+                <span class="toast-content">${msg}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => { if (toast.parentElement) toast.remove(); }, duration);
+        }
+
+        // ============================================================
+        // NAVIGATION
+        // ============================================================
+        function navigateTo(page) {
+            document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`page-${page}`);
+            if (target) {
+                target.classList.remove('hidden');
+                target.style.animation = 'none';
+                requestAnimationFrame(() => target.style.animation = 'fadeInUp 0.5s ease forwards');
+            }
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.toggle('active', el.dataset.page === page);
+            });
+            state.currentPage = page;
+            if (page !== 'home') state.history.push(page);
+            else state.history = ['home'];
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ============================================================
+        // ACCESS TOKEN BUTTON - DIRECT REDIRECT
+        // ============================================================
+        function openAccessToken() {
+            const url = 'https://eat-acces-web.onrender.com/website';
+            window.open(url, '_blank');
+        }
+
+        // ============================================================
+        // THEME TOGGLE
+        // ============================================================
+        async function loadTheme() {
+            try {
+                const res = await fetch('/api/theme');
+                const data = await res.json();
+                const theme = data.theme || 'blue';
+                state.currentTheme = theme;
+                applyTheme(theme);
+                
+                // Update toggle
+                const toggle = document.getElementById('themeToggle');
+                if (theme === 'orange') {
+                    toggle.classList.add('active');
+                } else {
+                    toggle.classList.remove('active');
+                }
+            } catch (e) {
+                // Default to blue
+                applyTheme('blue');
+            }
+        }
+
+        function applyTheme(theme) {
+            document.body.classList.remove('theme-orange');
+            if (theme === 'orange') {
+                document.body.classList.add('theme-orange');
+            }
+            state.currentTheme = theme;
+        }
+
+        async function toggleTheme() {
+            const toggle = document.getElementById('themeToggle');
+            toggle.classList.toggle('active');
+            
+            const newTheme = toggle.classList.contains('active') ? 'orange' : 'blue';
+            
+            try {
+                const res = await fetch('/api/theme', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ theme: newTheme })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    applyTheme(newTheme);
+                    showToast(`Theme changed to ${newTheme.charAt(0).toUpperCase() + newTheme.slice(1)}!`, 'success');
+                } else {
+                    // Revert toggle
+                    toggle.classList.toggle('active');
+                    showToast('Failed to change theme', 'error');
+                }
+            } catch (e) {
+                toggle.classList.toggle('active');
+                showToast('Error changing theme', 'error');
+            }
+        }
+
+        // ============================================================
+        // BANNER
+        // ============================================================
+        async function loadBanner() {
+            try {
+                const res = await fetch('/api/banner');
+                const data = await res.json();
+                if (data.success && data.has_banner) {
+                    state.bannerLink = data.link || '';
+                    const img = document.getElementById('bannerImage');
+                    img.src = '/api/banner/image?' + Date.now(); // Cache bust
+                    document.getElementById('bannerWrap').classList.add('show');
+                } else {
+                    document.getElementById('bannerWrap').classList.remove('show');
+                }
+            } catch (e) {
+                console.error('Failed to load banner:', e);
+            }
+        }
+
+        function openBannerLink() {
+            if (state.bannerLink) {
+                window.open(state.bannerLink, '_blank');
+            }
+        }
+
+        // ============================================================
+        // API HELPER
+        // ============================================================
+        async function callApi(endpoint, data) {
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            return res.json();
+        }
+
+        // ============================================================
+        // RESPONSE DISPLAY
+        // ============================================================
+        function displayResponse(id, data, success = true) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.remove('hidden', 'success', 'error');
+
+            if (success && data.bind) {
+                const p = data.player;
+                const b = data.bind;
+
+                let statusClass = 'unbound';
+                let statusLabel = 'Unbound';
+                if (b.status === 'bound') { statusClass = 'bound'; statusLabel = 'Bound'; } 
+                else if (b.status === 'pending') { statusClass = 'pending'; statusLabel = 'Pending'; } 
+                else if (b.status === 'changing') { statusClass = 'changing'; statusLabel = 'Changing'; }
+
+                el.className = 'response-box success';
+                el.innerHTML = `
+                    <div class="res-header">
+                        <span class="res-icon success"><i class="fas fa-check-circle"></i></span>
+                        Bind Information
+                        <span class="res-status success"><i class="fas fa-circle"></i> Success</span>
+                    </div>
+                    <div class="res-body">
+                        <div class="res-account-card">
+                            <div class="avatar">${p.nickname.charAt(0).toUpperCase()}</div>
+                            <div class="info">
+                                <div class="name">${p.nickname}</div>
+                                <div class="uid"><i class="fas fa-id-card"></i> UID: ${p.uid}</div>
+                            </div>
+                            <span class="region-badge"><i class="fas fa-map-marker-alt"></i> ${p.region}</span>
+                        </div>
+                        <div style="display:flex;justify-content:center;margin-bottom:12px;">
+                            <span class="res-status-badge ${statusClass}">
+                                <span class="dot"></span> ${statusLabel}
+                            </span>
+                        </div>
+                        <div class="res-details">
+                            <div class="res-detail-item">
+                                <div class="label">Current Email</div>
+                                <div class="value email">${b.current_email || 'Not Set'}</div>
+                            </div>
+                            <div class="res-detail-item">
+                                <div class="label">Pending Email</div>
+                                <div class="value email">${b.pending_email || 'None'}</div>
+                            </div>
+                            <div class="res-detail-item">
+                                <div class="label">Countdown</div>
+                                <div class="value">${b.countdown_human}</div>
+                            </div>
+                            <div class="res-detail-item">
+                                <div class="label">Status</div>
+                                <div class="value status-${statusClass}">${statusLabel}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (success) {
+                el.className = 'response-box success';
+                el.innerHTML = `
+                    <div class="res-header">
+                        <span class="res-icon success"><i class="fas fa-check-circle"></i></span>
+                        Success
+                        <span class="res-status success"><i class="fas fa-circle"></i> Done</span>
+                    </div>
+                    <div class="res-body">
+                        <div style="text-align:center;padding:10px 0;color:#22c55e;font-weight:600;">
+                            <i class="fas fa-check-circle" style="font-size:24px;display:block;margin-bottom:8px;"></i>
+                            ${data.message || 'Operation completed successfully!'}
+                        </div>
+                    </div>
+                `;
+            } else {
+                el.className = 'response-box error';
+                const errorMsg = data.error || data.message || 'An error occurred';
+                el.innerHTML = `
+                    <div class="res-header">
+                        <span class="res-icon error"><i class="fas fa-exclamation-circle"></i></span>
+                        Error
+                        <span class="res-status error"><i class="fas fa-circle"></i> Failed</span>
+                    </div>
+                    <div class="res-body">
+                        <div class="res-error-box">
+                            <div class="error-icon"><i class="fas fa-times-circle"></i></div>
+                            <div class="error-text">
+                                <strong>${errorMsg}</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function displayLoading(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.remove('hidden', 'success', 'error');
+            el.className = 'response-box loading';
+            el.innerHTML = `
+                <div class="res-skeleton">
+                    <div class="line" style="width:40%;"></div>
+                    <div class="line"></div>
+                    <div class="line medium"></div>
+                    <div class="line short"></div>
+                </div>
+            `;
+        }
+
+        function clearResponse(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.add('hidden');
+            el.innerHTML = '';
+            el.className = 'response-box hidden';
+        }
+
+        // ============================================================
+        // BIND INFO
+        // ============================================================
+        async function getBindInfo() {
+            const token = document.getElementById('bindInfoToken').value.trim();
+            if (!token) return showToast('Please enter Access Token', 'error');
+            clearResponse('bindInfoResult');
+            displayLoading('bindInfoResult');
+            showToast('Fetching bind info...', 'info');
+
+            try {
+                const res = await callApi('/api/bind-info', { access_token: token });
+                if (res.success) {
+                    displayResponse('bindInfoResult', res, true);
+                    showToast('Bind info fetched successfully!', 'success');
+                } else {
+                    displayResponse('bindInfoResult', { error: res.error }, false);
+                    showToast('Failed to fetch bind info', 'error');
+                }
+            } catch (e) {
+                displayResponse('bindInfoResult', { error: e.message }, false);
+                showToast('Request failed', 'error');
+            }
+        }
+
+        // ============================================================
+        // BIND EMAIL
+        // ============================================================
+        let bindStep = 1;
+        let bindData = {};
+
+        async function handleBindEmail() {
+            const token = document.getElementById('bindEmailToken').value.trim();
+            const email = document.getElementById('bindEmailAddr').value.trim();
+            const otp = document.getElementById('bindOtpCode').value.trim();
+            const security = document.getElementById('bindSecurityCode').value.trim();
+            const btn = document.getElementById('bindEmailBtn');
+
+            if (!btn) return;
+
+            if (bindStep === 1) {
+                if (!token || !email || !email.includes('@')) {
+                    return showToast('Enter valid token and email', 'error');
+                }
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> <span id="bindEmailBtnText">Sending...</span>';
+                showToast(`Sending OTP to ${email}...`, 'info');
+
+                try {
+                    const res = await callApi('/api/send-otp', { access_token: token, email: email });
+                    if (res.success) {
+                        bindData = { token, email };
+                        bindStep = 2;
+                        updateBindSteps(2);
+                        document.getElementById('bindOtpGroup').style.display = 'block';
+                        document.getElementById('bindSecurityGroup').style.display = 'none';
+                        btn.innerHTML = '<i class="fas fa-check"></i> <span id="bindEmailBtnText">Verify OTP</span>';
+                        btn.disabled = false;
+                        showToast('OTP sent! Check your email', 'success');
+                    } else {
+                        showToast('Failed to send OTP: ' + (res.error || 'Check details'), 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-paper-plane"></i> <span id="bindEmailBtnText">Send OTP</span>';
+                    }
+                } catch (e) {
+                    showToast('Error sending OTP: ' + e.message, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> <span id="bindEmailBtnText">Send OTP</span>';
+                }
+                return;
+            }
+
+            if (bindStep === 2) {
+                if (!otp || otp.length < 4) return showToast('Enter valid OTP', 'error');
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> <span id="bindEmailBtnText">Verifying...</span>';
+                showToast('Verifying OTP...', 'info');
+
+                try {
+                    const res = await callApi('/api/verify-otp', {
+                        access_token: bindData.token,
+                        email: bindData.email,
+                        code: otp
+                    });
+
+                    if (res.success || res.verifier_token) {
+                        bindData.verifier_token = res.verifier_token || res.token || 'verified_ok';
+                        bindStep = 3;
+                        updateBindSteps(3);
+                        document.getElementById('bindOtpGroup').style.display = 'none';
+                        document.getElementById('bindSecurityGroup').style.display = 'block';
+                        btn.innerHTML = '<i class="fas fa-lock"></i> <span id="bindEmailBtnText">Create Bind</span>';
+                        btn.disabled = false;
+                        showToast('OTP verified! Set security code', 'success');
+                    } else {
+                        showToast('OTP verification failed: ' + (res.error || 'Invalid code'), 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-check"></i> <span id="bindEmailBtnText">Verify OTP</span>';
+                    }
+                } catch (e) {
+                    showToast('Error verifying OTP: ' + e.message, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check"></i> <span id="bindEmailBtnText">Verify OTP</span>';
+                }
+                return;
+            }
+
+            if (bindStep === 3) {
+                if (!security || security.length < 6) return showToast('Set 6-digit security code', 'error');
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> <span id="bindEmailBtnText">Binding...</span>';
+                showToast('Creating bind request...', 'info');
+
+                try {
+                    const res = await callApi('/api/create-bind', {
+                        access_token: bindData.token,
+                        email: bindData.email,
+                        verifier_token: bindData.verifier_token,
+                        security_code: security
+                    });
+
+                    if (res.success) {
+                        displayResponse('bindEmailResult', { message: '✅ Email Bound Successfully!' }, true);
+                        showToast('Email bound successfully! 🎉', 'success');
+                        bindStep = 1;
+                        updateBindSteps(1);
+                        document.getElementById('bindOtpGroup').style.display = 'none';
+                        document.getElementById('bindSecurityGroup').style.display = 'none';
+                        document.getElementById('bindOtpCode').value = '';
+                        document.getElementById('bindSecurityCode').value = '';
+                        btn.innerHTML = '<i class="fas fa-paper-plane"></i> <span id="bindEmailBtnText">Send OTP</span>';
+                        btn.disabled = false;
+                        bindData = {};
+                    } else {
+                        showToast('Bind failed: ' + (res.error || 'Unknown error'), 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-lock"></i> <span id="bindEmailBtnText">Create Bind</span>';
+                    }
+                } catch (e) {
+                    showToast('Error creating bind: ' + e.message, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-lock"></i> <span id="bindEmailBtnText">Create Bind</span>';
+                }
+            }
+        }
+
+        function updateBindSteps(step) {
+            for (let i = 1; i <= 3; i++) {
+                const dot = document.getElementById(`bs${i}`);
+                if (dot) {
+                    dot.className = 'step-dot';
+                    if (i < step) dot.classList.add('done');
+                    else if (i === step) dot.classList.add('active');
+                }
+            }
+            for (let i = 1; i <= 2; i++) {
+                const line = document.getElementById(`bl${i}`);
+                if (line) {
+                    line.className = 'step-line';
+                    if (i < step) line.classList.add('done');
+                }
+            }
+            const labels = ['Send OTP', 'Verify OTP', 'Set Security Code'];
+            const labelEl = document.getElementById('bindStepLabel');
+            if (labelEl) labelEl.textContent = labels[step - 1];
+        }
+
+        // ============================================================
+        // UNBIND EMAIL
+        // ============================================================
+        let unbindStep = 1;
+        let unbindData = {};
+
+        function updateUnbindSteps(step) {
+            for (let i = 1; i <= 3; i++) {
+                const dot = document.getElementById(`us${i}`);
+                if (dot) {
+                    dot.className = 'step-dot';
+                    if (i < step) dot.classList.add('done');
+                    else if (i === step) dot.classList.add('active');
+                }
+            }
+            for (let i = 1; i <= 2; i++) {
+                const line = document.getElementById(`ul${i}`);
+                if (line) {
+                    line.className = 'step-line';
+                    if (i < step) line.classList.add('done');
+                }
+            }
+            const labels = ['Enter Details', 'Verify Identity', 'Confirm Unbind'];
+            const labelEl = document.getElementById('unbindStepLabel');
+            if (labelEl) labelEl.textContent = labels[step - 1];
+        }
+
+        function unbindMethodChange() {
+            const method = document.getElementById('unbindMethod').value;
+            const otpSection = document.getElementById('unbindOtpSection');
+            const codeSection = document.getElementById('unbindCodeSection');
+            const emailGroup = document.getElementById('unbindEmailGroup');
+            const otpGroup = document.getElementById('unbindOtpGroup');
+
+            if (method === 'otp') {
+                otpSection.style.display = 'block';
+                codeSection.style.display = 'none';
+                emailGroup.style.display = 'block';
+                otpGroup.style.display = 'none';
+            } else {
+                otpSection.style.display = 'none';
+                codeSection.style.display = 'block';
+            }
+            unbindStep = 1;
+            updateUnbindSteps(1);
+            const btn = document.getElementById('unbindBtn');
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-unlink"></i> <span id="unbindBtnText">Unbind Email</span>';
+                btn.disabled = false;
+            }
+        }
+
+        async function handleUnbind() {
+            const token = document.getElementById('unbindToken').value.trim();
+            const method = document.getElementById('unbindMethod').value;
+            const btn = document.getElementById('unbindBtn');
+
+            if (!btn) return;
+
+            if (unbindStep === 1) {
+                if (!token) return showToast('Enter Access Token', 'error');
+
+                if (method === 'otp') {
+                    const email = document.getElementById('unbindEmail').value.trim();
+                    if (!email || !email.includes('@')) return showToast('Enter valid current email', 'error');
+
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="spinner"></span> <span id="unbindBtnText">Sending OTP...</span>';
+                    showToast(`Sending OTP to ${email}...`, 'info');
+
+                    try {
+                        const sendRes = await callApi('/api/send-otp', { access_token: token, email: email });
+                        if (sendRes.success) {
+                            unbindData = { token, email, method };
+                            unbindStep = 2;
+                            updateUnbindSteps(2);
+                            document.getElementById('unbindOtpGroup').style.display = 'block';
+                            document.getElementById('unbindEmailGroup').style.display = 'none';
+                            btn.innerHTML = '<i class="fas fa-check"></i> <span id="unbindBtnText">Verify OTP</span>';
+                            showToast(`OTP sent to ${email}`, 'success');
+                        } else {
+                            showToast('Failed to send OTP', 'error');
+                        }
+                    } catch (e) {
+                        showToast('Error: ' + e.message, 'error');
+                    }
+                    btn.disabled = false;
+                    return;
+                } else {
+                    const email = document.getElementById('unbindCodeEmail').value.trim();
+                    const code = document.getElementById('unbindCode').value.trim();
+
+                    if (!email || !email.includes('@')) return showToast('Enter valid current email', 'error');
+                    if (!code || code.length < 6) return showToast('Enter valid 6-digit security code', 'error');
+
+                    unbindData = { token, email, method, code };
+                    unbindStep = 2;
+                    updateUnbindSteps(2);
+                    document.getElementById('unbindCodeSection').style.display = 'none';
+                    btn.innerHTML = '<i class="fas fa-check"></i> <span id="unbindBtnText">Verify & Unbind</span>';
+                    showToast('Processing...', 'info');
+                    setTimeout(() => { handleUnbind(); }, 300);
+                    return;
+                }
+            }
+
+            if (unbindStep === 2) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> <span id="unbindBtnText">Verifying...</span>';
+                showToast('Verifying identity...', 'info');
+
+                try {
+                    let verifyData = { access_token: unbindData.token, email: unbindData.email };
+                    if (unbindData.method === 'otp') {
+                        const otp = document.getElementById('unbindOtp').value.trim();
+                        if (!otp || otp.length < 4) {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-check"></i> <span id="unbindBtnText">Verify OTP</span>';
+                            return showToast('Enter valid OTP', 'error');
+                        }
+                        verifyData.otp = otp;
+                    } else {
+                        verifyData.security_code = unbindData.code;
+                    }
+
+                    const verifyRes = await callApi('/api/verify-identity', verifyData);
+                    if (verifyRes.success || verifyRes.identity_token) {
+                        unbindData.identity_token = verifyRes.identity_token || 'verified_ok';
+                        unbindStep = 3;
+                        updateUnbindSteps(3);
+                        btn.innerHTML = '<i class="fas fa-trash"></i> <span id="unbindBtnText">Confirm Unbind</span>';
+                        showToast('Identity verified!', 'success');
+                        setTimeout(() => { handleUnbind(); }, 300);
+                        return;
+                    } else {
+                        showToast('Verification failed', 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-check"></i> <span id="unbindBtnText">Verify OTP</span>';
+                    }
+                } catch (e) {
+                    showToast('Error: ' + e.message, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check"></i> <span id="unbindBtnText">Verify OTP</span>';
+                }
+                return;
+            }
+
+            if (unbindStep === 3) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> <span id="unbindBtnText">Unbinding...</span>';
+                showToast('Removing email...', 'info');
+
+                try {
+                    const res = await callApi('/api/create-unbind', {
+                        access_token: unbindData.token,
+                        identity_token: unbindData.identity_token
+                    });
+
+                    if (res.success) {
+                        displayResponse('unbindResult', { message: '✅ Email unbound successfully!' }, true);
+                        showToast('Email unbound!', 'success');
+                        unbindStep = 1;
+                        updateUnbindSteps(1);
+                        document.getElementById('unbindOtpGroup').style.display = 'none';
+                        document.getElementById('unbindEmailGroup').style.display = 'block';
+                        document.getElementById('unbindCodeSection').style.display = 'none';
+                        document.getElementById('unbindMethodGroup').style.display = 'block';
+                        document.getElementById('unbindOtp').value = '';
+                        document.getElementById('unbindCode').value = '';
+                        document.getElementById('unbindEmail').value = '';
+                        document.getElementById('unbindCodeEmail').value = '';
+                        btn.innerHTML = '<i class="fas fa-unlink"></i> <span id="unbindBtnText">Unbind Email</span>';
+                        btn.disabled = false;
+                        unbindData = {};
+                    } else {
+                        showToast('Unbind failed: ' + (res.error || 'Unknown error'), 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-trash"></i> <span id="unbindBtnText">Confirm Unbind</span>';
+                    }
+                } catch (e) {
+                    showToast('Error: ' + e.message, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-trash"></i> <span id="unbindBtnText">Confirm Unbind</span>';
+                }
+            }
+        }
+
+        // ============================================================
+        // CHANGE BIND
+        // ============================================================
+        let changeStep = 1;
+        let changeData = {};
+
+        function updateChangeSteps(step) {
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById(`cs${i}`);
+                if (dot) {
+                    dot.className = 'step-dot';
+                    if (i < step) dot.classList.add('done');
+                    else if (i === step) dot.classList.add('active');
+                }
+            }
+            for (let i = 1; i <= 3; i++) {
+                const line = document.getElementById(`cl${i}`);
+                if (line) {
+                    line.className = 'step-line';
+                    if (i < step) line.classList.add('done');
+                }
+            }
+            const labels = ['Enter Details', 'Verify Identity', 'Verify New Email', 'Confirm Change'];
+            const labelEl = document.getElementById('changeStepLabel');
+            if (labelEl) labelEl.textContent = labels[step - 1];
+        }
+
+        function changeMethodChange() {
+            const method = document.getElementById('changeMethod').value;
+            const otpSection = document.getElementById('changeOtpSection');
+            const codeSection = document.getElementById('changeCodeSection');
+            const currentEmailGroup = document.getElementById('changeCurrentEmailGroup');
+            const otpGroup = document.getElementById('changeOtpGroup');
+            const newEmailSection = document.getElementById('changeNewEmailSection');
+
+            if (method === 'otp') {
+                otpSection.style.display = 'block';
+                codeSection.style.display = 'none';
+                currentEmailGroup.style.display = 'block';
+                otpGroup.style.display = 'none';
+                newEmailSection.style.display = 'none';
+            } else {
+                otpSection.style.display = 'none';
+                codeSection.style.display = 'block';
+                newEmailSection.style.display = 'none';
+            }
+            changeStep = 1;
+            updateChangeSteps(1);
+            const btn = document.getElementById('changeBtn');
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-exchange-alt"></i> <span id="changeBtnText">Change Email</span>';
+                btn.disabled = false;
+            }
+        }
+
+        async function handleChangeBind() {
+            const token = document.getElementById('changeToken').value.trim();
+            const method = document.getElementById('changeMethod').value;
+            const btn = document.getElementById('changeBtn');
+
+            if (!btn) return;
+
+            if (changeStep === 1) {
+                if (!token) return showToast('Enter Access Token', 'error');
+
+                if (method === 'otp') {
+                    const email = document.getElementById('changeCurrentEmail').value.trim();
+                    if (!email || !email.includes('@')) return showToast('Enter valid current email', 'error');
+
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="spinner"></span> <span id="changeBtnText">Sending OTP...</span>';
+                    showToast(`Sending OTP to ${email}...`, 'info');
+
+                    try {
+                        const sendRes = await callApi('/api/send-otp', { access_token: token, email: email });
+                        if (sendRes.success) {
+                            changeData = { token, currentEmail: email, method };
+                            changeStep = 2;
+                            updateChangeSteps(2);
+                            document.getElementById('changeOtpGroup').style.display = 'block';
+                            document.getElementById('changeCurrentEmailGroup').style.display = 'none';
+                            btn.innerHTML = '<i class="fas fa-check"></i> <span id="changeBtnText">Verify Current Email</span>';
+                            showToast(`OTP sent to ${email}`, 'success');
+                        } else {
+                            showToast('Failed to send OTP', 'error');
+                        }
+                    } catch (e) {
+                        showToast('Error: ' + e.message, 'error');
+                    }
+                    btn.disabled = false;
+                    return;
+                } else {
+                    const email = document.getElementById('changeCodeEmail').value.trim();
+                    const code = document.getElementById('changeCode').value.trim();
+
+                    if (!email || !email.includes('@')) return showToast('Enter valid current email', 'error');
+                    if (!code || code.length < 6) return showToast('Enter valid 6-digit security code', 'error');
+
+                    changeData = { token, currentEmail: email, method, code };
+                    changeStep = 2;
+                    updateChangeSteps(2);
+                    document.getElementById('changeCodeSection').style.display = 'none';
+                    btn.innerHTML = '<i class="fas fa-check"></i> <span id="changeBtnText">Verify & Proceed</span>';
+                    showToast('Processing...', 'info');
+                    setTimeout(() => { handleChangeBind(); }, 300);
+                    return;
+                }
+            }
+
+            if (changeStep === 2) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> <span id="changeBtnText">Verifying...</span>';
+                showToast('Verifying identity...', 'info');
+
+                try {
+                    let verifyData = { access_token: changeData.token, email: changeData.currentEmail };
+                    if (changeData.method === 'otp') {
+                        const otp = document.getElementById('changeOtp').value.trim();
+                        if (!otp || otp.length < 4) {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-check"></i> <span id="changeBtnText">Verify Current Email</span>';
+                            return showToast('Enter valid OTP', 'error');
+                        }
+                        verifyData.otp = otp;
+                    } else {
+                        verifyData.security_code = changeData.code;
+                    }
+
+                    const verifyRes = await callApi('/api/verify-identity', verifyData);
+                    if (verifyRes.success || verifyRes.identity_token) {
+                        changeData.identity_token = verifyRes.identity_token || 'verified_ok';
+                        changeStep = 3;
+                        updateChangeSteps(3);
+                        document.getElementById('changeNewEmailSection').style.display = 'block';
+                        document.getElementById('changeOtpGroup').style.display = 'none';
+                        btn.innerHTML = '<i class="fas fa-envelope"></i> <span id="changeBtnText">Send OTP to New Email</span>';
+                        showToast('Identity verified! Enter new email', 'success');
+                    } else {
+                        showToast('Verification failed', 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-check"></i> <span id="changeBtnText">Verify Current Email</span>';
+                    }
+                } catch (e) {
+                    showToast('Error: ' + e.message, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check"></i> <span id="changeBtnText">Verify Current Email</span>';
+                }
+                return;
+            }
+
+            if (changeStep === 3) {
+                const newEmail = document.getElementById('changeNewEmail').value.trim();
+                if (!newEmail || !newEmail.includes('@')) return showToast('Enter valid new email', 'error');
+
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> <span id="changeBtnText">Sending OTP...</span>';
+                showToast(`Sending OTP to ${newEmail}...`, 'info');
+
+                try {
+                    const sendRes = await callApi('/api/send-otp', { access_token: changeData.token, email: newEmail });
+                    if (sendRes.success) {
+                        changeData.newEmail = newEmail;
+                        changeStep = 4;
+                        updateChangeSteps(4);
+                        document.getElementById('changeNewOtpGroup').style.display = 'block';
+                        btn.innerHTML = '<i class="fas fa-check"></i> <span id="changeBtnText">Verify New Email</span>';
+                        showToast(`OTP sent to ${newEmail}`, 'success');
+                    } else {
+                        showToast('Failed to send OTP to new email', 'error');
+                    }
+                } catch (e) {
+                    showToast('Error: ' + e.message, 'error');
+                }
+                btn.disabled = false;
+                return;
+            }
+
+            if (changeStep === 4) {
+                const newOtp = document.getElementById('changeNewOtp').value.trim();
+                if (!newOtp || newOtp.length < 4) return showToast('Enter valid OTP from new email', 'error');
+
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> <span id="changeBtnText">Verifying...</span>';
+                showToast('Verifying new email...', 'info');
+
+                try {
+                    const verifyRes = await callApi('/api/verify-otp', {
+                        access_token: changeData.token,
+                        email: changeData.newEmail,
+                        code: newOtp
+                    });
+
+                    if (verifyRes.success || verifyRes.verifier_token) {
+                        const rebindRes = await callApi('/api/create-rebind', {
+                            access_token: changeData.token,
+                            identity_token: changeData.identity_token,
+                            email: changeData.newEmail,
+                            verifier_token: verifyRes.verifier_token || 'verified_ok'
+                        });
+
+                        if (rebindRes.success) {
+                            displayResponse('changeResult', { message: '✅ Email changed successfully!' }, true);
+                            showToast('Email changed successfully!', 'success');
+                            changeStep = 1;
+                            updateChangeSteps(1);
+                            document.getElementById('changeNewEmailSection').style.display = 'none';
+                            document.getElementById('changeNewOtpGroup').style.display = 'none';
+                            document.getElementById('changeOtpGroup').style.display = 'none';
+                            document.getElementById('changeCurrentEmailGroup').style.display = 'block';
+                            document.getElementById('changeCodeSection').style.display = 'none';
+                            document.getElementById('changeMethodGroup').style.display = 'block';
+                            document.getElementById('changeNewEmail').value = '';
+                            document.getElementById('changeNewOtp').value = '';
+                            document.getElementById('changeOtp').value = '';
+                            document.getElementById('changeCode').value = '';
+                            document.getElementById('changeCurrentEmail').value = '';
+                            document.getElementById('changeCodeEmail').value = '';
+                            btn.innerHTML = '<i class="fas fa-exchange-alt"></i> <span id="changeBtnText">Change Email</span>';
+                            btn.disabled = false;
+                            changeData = {};
+                        } else {
+                            showToast('Rebind failed: ' + (rebindRes.error || 'Unknown error'), 'error');
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-check"></i> <span id="changeBtnText">Verify New Email</span>';
+                        }
+                    } else {
+                        showToast('New email verification failed', 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-check"></i> <span id="changeBtnText">Verify New Email</span>';
+                    }
+                } catch (e) {
+                    showToast('Error: ' + e.message, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check"></i> <span id="changeBtnText">Verify New Email</span>';
+                }
+            }
+        }
+
+        // ============================================================
+        // CANCEL BIND
+        // ============================================================
+        async function handleCancelBind() {
+            const token = document.getElementById('cancelToken').value.trim();
+            if (!token) return showToast('Enter Access Token', 'error');
+
+            const btn = document.getElementById('cancelBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Canceling...';
+            showToast('Canceling bind request...', 'info');
+
+            try {
+                const res = await callApi('/api/cancel-bind', { access_token: token });
+                if (res.success) {
+                    displayResponse('cancelResult', { message: '✅ Bind request cancelled' }, true);
+                    showToast('Bind request cancelled', 'success');
+                } else {
+                    displayResponse('cancelResult', { error: 'Cancel failed' }, false);
+                    showToast('Cancel failed', 'error');
+                }
+            } catch (e) {
+                displayResponse('cancelResult', { error: e.message }, false);
+                showToast('Error: ' + e.message, 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-times"></i> Cancel Request';
+        }
+
+        // ============================================================
+        // EAT TO TOKEN
+        // ============================================================
+        async function handleEatToToken() {
+            const input = document.getElementById('eatInput').value.trim();
+            if (!input) return showToast('Enter EAT token or URL', 'error');
+
+            const btn = document.getElementById('eatBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Converting...';
+            showToast('Converting EAT to Access Token...', 'info');
+
+            try {
+                const res = await callApi('/api/eat-to-token', { eat_input: input });
+                if (res.success) {
+                    const el = document.getElementById('eatResult');
+                    el.classList.remove('hidden', 'success', 'error');
+                    el.className = 'response-box success';
+                    const nickname = res.nickname || res.account_id || 'User';
+                    el.innerHTML = `
+                        <div class="res-header">
+                            <span class="res-icon success"><i class="fas fa-check-circle"></i></span>
+                            Conversion Successful
+                            <span class="res-status success"><i class="fas fa-circle"></i> Done</span>
+                        </div>
+                        <div class="res-body">
+                            <div class="res-account-card">
+                                <div class="avatar">${nickname.charAt(0).toUpperCase()}</div>
+                                <div class="info">
+                                    <div class="name">${nickname}</div>
+                                    <div class="uid"><i class="fas fa-id-card"></i> ${res.account_id || 'N/A'}</div>
+                                </div>
+                                <span class="region-badge"><i class="fas fa-map-marker-alt"></i> ${res.region || 'Global'}</span>
+                            </div>
+                            <div style="background:var(--bg-input);border-radius:8px;padding:12px;margin-top:8px;">
+                                <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">Access Token</div>
+                                <div style="font-family:monospace;font-size:11px;word-break:break-all;color:var(--text-secondary);">
+                                    ${res.access_token}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    showToast('Token converted!', 'success');
+                } else {
+                    displayResponse('eatResult', { error: res.error }, false);
+                    showToast('Conversion failed: ' + res.error, 'error');
+                }
+            } catch (e) {
+                displayResponse('eatResult', { error: e.message }, false);
+                showToast('Error: ' + e.message, 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-arrow-right"></i> Convert';
+        }
+
+        // ============================================================
+        // REVOKE TOKEN
+        // ============================================================
+        async function handleRevokeToken() {
+            const token = document.getElementById('revokeToken').value.trim();
+            if (!token) return showToast('Enter Access Token', 'error');
+
+            const btn = document.getElementById('revokeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Revoking...';
+            showToast('Revoking token...', 'info');
+
+            try {
+                const res = await callApi('/api/revoke-token', { access_token: token });
+                if (res.success) {
+                    const nickname = res.nickname || 'User';
+                    displayResponse('revokeResult', { message: `✅ Token revoked for ${nickname}` }, true);
+                    showToast('Token revoked', 'success');
+                    document.getElementById('revokeToken').value = '';
+                } else {
+                    displayResponse('revokeResult', { error: res.error }, false);
+                    showToast('Revoke failed: ' + res.error, 'error');
+                }
+            } catch (e) {
+                displayResponse('revokeResult', { error: e.message }, false);
+                showToast('Error: ' + e.message, 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-skull"></i> Revoke Token';
+        }
+
+        // ============================================================
+        // LOGIN HISTORY
+        // ============================================================
+        async function handleLoginHistory() {
+            const token = document.getElementById('historyToken').value.trim();
+            if (!token) return showToast('Enter Access Token or JWT', 'error');
+
+            const btn = document.getElementById('historyBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Fetching...';
+            showToast('Fetching login history...', 'info');
+
+            try {
+                const res = await callApi('/api/login-history', { token });
+                if (res.success && res.records) {
+                    const el = document.getElementById('historyResult');
+                    el.classList.remove('hidden', 'success', 'error');
+                    el.className = 'response-box success';
+                    let recordsHtml = res.records.map((r, i) => {
+                        const date = new Date(r.timestamp * 1000).toLocaleString();
+                        return `
+                            <div style="background:var(--bg-input);border-radius:8px;padding:10px 14px;margin-bottom:6px;border-left:3px solid var(--primary);">
+                                <div style="font-weight:600;font-size:13px;">#${i+1} ${r.device}</div>
+                                <div style="font-size:11px;color:var(--text-muted);">${date} · ${r.arch} · ${r.ram}MB</div>
+                            </div>
+                        `;
+                    }).join('');
+                    el.innerHTML = `
+                        <div class="res-header">
+                            <span class="res-icon info"><i class="fas fa-history"></i></span>
+                            Login History (${res.count} records)
+                            <span class="res-status success"><i class="fas fa-circle"></i> Loaded</span>
+                        </div>
+                        <div class="res-body">${recordsHtml}</div>
+                    `;
+                    showToast(`Found ${res.count} records`, 'success');
+                } else {
+                    displayResponse('historyResult', { error: 'No history found' }, false);
+                    showToast('No history found', 'warning');
+                }
+            } catch (e) {
+                displayResponse('historyResult', { error: e.message }, false);
+                showToast('Error: ' + e.message, 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-history"></i> Fetch History';
+        }
+
+        // ============================================================
+        // BOUND ACCOUNTS
+        // ============================================================
+        async function handleBoundAccounts() {
+            const token = document.getElementById('boundToken').value.trim();
+            if (!token) return showToast('Enter Access Token', 'error');
+
+            const btn = document.getElementById('boundBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Fetching...';
+            showToast('Fetching platform binds...', 'info');
+
+            try {
+                const res = await callApi('/api/platform-binds', { access_token: token });
+                if (res.success) {
+                    const el = document.getElementById('boundResult');
+                    el.classList.remove('hidden', 'success', 'error');
+                    el.className = 'response-box success';
+                    el.innerHTML = `
+                        <div class="res-header">
+                            <span class="res-icon info"><i class="fas fa-users"></i></span>
+                            Platform Binds
+                            <span class="res-status success"><i class="fas fa-circle"></i> Loaded</span>
+                        </div>
+                        <div class="res-body">
+                            <div style="background:var(--bg-input);border-radius:8px;padding:12px 16px;margin-bottom:8px;">
+                                <div style="font-size:11px;color:var(--text-muted);">BOUND</div>
+                                <div style="font-weight:600;font-size:14px;margin-top:2px;">
+                                    ${res.bounded_names && res.bounded_names.length > 0 ? res.bounded_names.join(', ') : 'None'}
+                                </div>
+                            </div>
+                            <div style="background:var(--bg-input);border-radius:8px;padding:12px 16px;">
+                                <div style="font-size:11px;color:var(--text-muted);">AVAILABLE</div>
+                                <div style="font-weight:600;font-size:14px;margin-top:2px;">
+                                    ${res.available_names && res.available_names.length > 0 ? res.available_names.join(', ') : 'None'}
+                                </div>
+                            </div>
+                            <div style="margin-top:10px;text-align:center;font-size:12px;color:var(--text-muted);">
+                                ${res.bounded_names ? res.bounded_names.length : 0} platforms bound
+                            </div>
+                        </div>
+                    `;
+                    showToast(`Found ${res.bounded_names ? res.bounded_names.length : 0} bound platforms`, 'success');
+                } else {
+                    displayResponse('boundResult', { error: res.error }, false);
+                    showToast('Failed to fetch', 'error');
+                }
+            } catch (e) {
+                displayResponse('boundResult', { error: e.message }, false);
+                showToast('Error: ' + e.message, 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-users"></i> Check Platforms';
+        }
+
+        // ============================================================
+        // BROADCAST / POPUP
+        // ============================================================
+        async function checkBroadcast() {
+            try {
+                const res = await fetch('/api/broadcast/status');
+                const data = await res.json();
+                if (data.active) {
+                    showBroadcastPopup(data);
+                }
+            } catch (e) {
+                console.error('Broadcast check failed:', e);
+            }
+        }
+
+        function showBroadcastPopup(data) {
+            const modal = document.getElementById('broadcastModal');
+            document.getElementById('broadcastTitle').textContent = data.title;
+            document.getElementById('broadcastMessage').textContent = data.message;
+            
+            const header = document.getElementById('broadcastHeader');
+            header.className = 'modal-header ' + data.type;
+            
+            const iconMap = {
+                success: 'fas fa-check-circle',
+                warning: 'fas fa-exclamation-triangle',
+                danger: 'fas fa-times-circle',
+                info: 'fas fa-bullhorn'
+            };
+            document.getElementById('broadcastIcon').className = iconMap[data.type] || iconMap.info;
+            
+            modal.dataset.broadcastId = data.id || '';
+            modal.classList.add('show');
+        }
+
+        async function closeBroadcast() {
+            const modal = document.getElementById('broadcastModal');
+            modal.classList.remove('show');
+            
+            const broadcastId = modal.dataset.broadcastId || '';
+            if (broadcastId) {
+                try {
+                    await fetch('/api/broadcast/read', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ broadcast_id: broadcastId })
+                    });
+                } catch (e) {
+                    // ignore
+                }
+            }
+        }
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            const loggedIn = await checkAuth();
+            if (!loggedIn) return;
+
+            updateBindSteps(1);
+            updateUnbindSteps(1);
+            updateChangeSteps(1);
+
+            document.getElementById('bindOtpGroup').style.display = 'none';
+            document.getElementById('bindSecurityGroup').style.display = 'none';
+            document.getElementById('unbindOtpGroup').style.display = 'none';
+            document.getElementById('changeOtpGroup').style.display = 'none';
+            document.getElementById('changeNewOtpGroup').style.display = 'none';
+            document.getElementById('changeNewEmailSection').style.display = 'none';
+
+            await loadTheme();
+            await loadBanner();
+            
+            setTimeout(checkBroadcast, 1000);
+            navigateTo('home');
+
+            console.log('🔥 FF Tools Pro Dashboard v2.0');
+            console.log('👤 Logged in as:', state.username);
+            console.log('🎨 Theme:', state.currentTheme);
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('broadcastModal').classList.contains('show')) {
+                    closeBroadcast();
+                } else if (state.currentPage !== 'home') {
+                    const pages = state.history;
+                    if (pages.length > 1) {
+                        pages.pop();
+                        navigateTo(pages[pages.length - 1]);
+                    } else {
+                        navigateTo('home');
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

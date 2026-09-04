@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Login - FF Tools Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #ff6b00;
+            --primary-dark: #cc5500;
+            --primary-light: #ff8c38;
+            --primary-glow: rgba(255, 107, 0, 0.4);
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #111118;
+            --bg-card: #161620;
+            --bg-card-hover: #1e1e2a;
+            --text-primary: #f0eeff;
+            --text-secondary: #a8a0c8;
+            --text-muted: #6a6288;
+            --border-color: #2a2a3a;
+            --border-light: #3a3a4a;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 8px 32px rgba(255, 107, 0, 0.3);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        /* Background Glow */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 40%, rgba(255, 107, 0, 0.05), transparent 60%),
+                radial-gradient(ellipse at 70% 60%, rgba(255, 107, 0, 0.03), transparent 50%);
+            pointer-events: none;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        /* ============================================================
+           ANIMATIONS
+           ============================================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        @keyframes glow {
+            0%,
+            100% {
+                box-shadow: 0 0 20px var(--primary-glow);
+            }
+            50% {
+                box-shadow: 0 0 60px var(--primary-glow);
+            }
+        }
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+        @keyframes successBounce {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            70% {
+                transform: scale(0.95);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeInUp 0.6s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 40px 32px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light), var(--primary));
+            background-size: 200% 100%;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .login-card:hover::before {
+            opacity: 1;
+            animation: shimmer 1.5s ease infinite;
+        }
+        .login-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(255, 107, 0, 0.02), transparent 70%);
+            pointer-events: none;
+        }
+        .login-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 900;
+            color: #fff;
+            margin: 0 auto 12px;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            animation: glow 2s infinite;
+            position: relative;
+            transition: var(--transition);
+        }
+        .login-logo:hover {
+            transform: scale(1.05) rotate(-5deg);
+        }
+        .login-logo::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+            opacity: 0.3;
+            animation: pulse-ring 2s infinite;
+        }
+        .login-title {
+            font-size: 26px;
+            font-weight: 800;
+        }
+        .login-title .text-gradient {
+            background: linear-gradient(135deg, #ff6b00, #ff8c38, #ffb06b, #ff6b00);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientMove 4s ease infinite;
+        }
+        .login-subtitle {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        .login-subtitle .premium-tag {
+            display: inline-block;
+            background: rgba(255, 107, 0, 0.12);
+            padding: 1px 10px;
+            border-radius: 12px;
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--primary-light);
+            border: 1px solid rgba(255, 107, 0, 0.15);
+            margin-left: 4px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            transition: var(--transition);
+            margin-bottom: 20px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+        }
+        .back-link:hover {
+            color: var(--primary-light);
+            border-color: var(--primary);
+            transform: translateX(-3px);
+            background: rgba(255, 107, 0, 0.05);
+        }
+        .back-link i {
+            font-size: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            animation: fadeInUp 0.4s ease;
+        }
+        .form-group:last-of-type {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .form-label .required {
+            color: #ef4444;
+            margin-left: 2px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            outline: none;
+        }
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+            transform: translateY(-1px);
+        }
+        .form-input::placeholder {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .form-input.error {
+            border-color: #ef4444;
+            animation: shake 0.4s ease;
+        }
+        .form-input.success-input {
+            border-color: #22c55e;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.05));
+            pointer-events: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 8px 35px var(--primary-glow);
+        }
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .btn .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+        }
+
+        /* ============================================================
+           MESSAGES
+           ============================================================ */
+        .success-msg {
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+            animation: successBounce 0.5s ease;
+            align-items: center;
+            gap: 10px;
+        }
+        .success-msg.show {
+            display: flex;
+        }
+        .success-msg i {
+            font-size: 18px;
+        }
+
+        .error-msg {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+            animation: fadeInUp 0.3s ease;
+            align-items: center;
+            gap: 10px;
+        }
+        .error-msg.show {
+            display: flex;
+        }
+        .error-msg i {
+            font-size: 18px;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .login-footer {
+            margin-top: 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 12px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+        .login-footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .login-footer .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .login-footer .footer-links a:hover {
+            color: var(--primary-light);
+            background: rgba(255, 107, 0, 0.06);
+        }
+        .login-footer .footer-links a i {
+            font-size: 12px;
+        }
+        .login-footer .footer-divider {
+            color: var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+        .login-footer .support-text {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .login-footer .support-text strong {
+            color: var(--primary-light);
+            font-weight: 600;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 420px) {
+            .login-card {
+                padding: 28px 20px;
+            }
+            .login-title {
+                font-size: 20px;
+            }
+            .login-logo {
+                width: 54px;
+                height: 54px;
+                font-size: 22px;
+            }
+            .login-footer .footer-links {
+                gap: 8px;
+                flex-direction: column;
+                align-items: center;
+            }
+            .login-footer .footer-divider {
+                display: none;
+            }
+            .back-link {
+                font-size: 11px;
+                padding: 4px 12px;
+            }
+            .form-input {
+                padding: 12px 14px;
+                font-size: 13px;
+            }
+        }
+        @media (max-width: 360px) {
+            .login-card {
+                padding: 20px 16px;
+            }
+            .login-title {
+                font-size: 18px;
+            }
+            .login-logo {
+                width: 48px;
+                height: 48px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-card">
+
+            <!-- Back to Landing Page -->
+            <a href="/" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+
+            <!-- Header -->
+            <div class="login-header">
+                <div class="login-logo">🔥</div>
+                <h1 class="login-title"><span class="text-gradient">FF Tools Pro</span></h1>
+                <p class="login-subtitle">
+                    Premium Bind Tool • Secure Access
+                    <span class="premium-tag"><i class="fas fa-star"></i> v2.0</span>
+                </p>
+            </div>
+
+            <!-- Success Message (from registration) -->
+            <div id="successMsg" class="success-msg">
+                <i class="fas fa-check-circle"></i>
+                <span id="successText">Account created! Please login.</span>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMsg" class="error-msg">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText">Invalid credentials</span>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Username <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="username" placeholder="Enter your username" required autofocus />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password <span class="required">*</span></label>
+                    <input type="password" class="form-input" id="password" placeholder="Enter your password" required />
+                </div>
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="login-footer">
+                <div class="footer-links">
+                    <a href="/register">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </a>
+                    <span class="footer-divider">|</span>
+                    <a href="/">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <span class="footer-divider">|</span>
+                    <a href="https://t.me/FF_TOOLS_PRO" target="_blank">
+                        <i class="fab fa-telegram-plane"></i> Support
+                    </a>
+                </div>
+                <p class="support-text">
+                    Need help? Contact <strong>@FF_TOOLS_PRO</strong>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script>
+        // ============================================================
+        // HANDLE LOGIN
+        // ============================================================
+        async function handleLogin(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const btn = document.getElementById('loginBtn');
+            const errorMsg = document.getElementById('errorMsg');
+            const errorText = document.getElementById('errorText');
+            const successMsg = document.getElementById('successMsg');
+
+            // Reset
+            errorMsg.classList.remove('show');
+            successMsg.classList.remove('show');
+            document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error', 'success-input'));
+
+            // Validation
+            if (!username || !password) {
+                errorText.textContent = 'Please fill in all fields';
+                errorMsg.classList.add('show');
+                if (!username) document.getElementById('username').classList.add('error');
+                if (!password) document.getElementById('password').classList.add('error');
+                return;
+            }
+
+            // Loading state
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Logging in...';
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    // ✅ Success - redirect based on role
+                    btn.innerHTML = '<i class="fas fa-check"></i> Success!';
+                    document.getElementById('username').classList.add('success-input');
+                    document.getElementById('password').classList.add('success-input');
+
+                    setTimeout(() => {
+                        if (data.user.is_admin) {
+                            window.location.href = '/admin';
+                        } else {
+                            window.location.href = '/dashboard';
+                        }
+                    }, 500);
+                } else {
+                    errorText.textContent = data.error || 'Login failed. Please try again.';
+                    errorMsg.classList.add('show');
+                    document.getElementById('password').classList.add('error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                }
+            } catch (err) {
+                errorText.textContent = 'Network error. Please check your connection.';
+                errorMsg.classList.add('show');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            }
+        }
+
+        // ============================================================
+        // CHECK SESSION
+        // ============================================================
+        async function checkSession() {
+            try {
+                const res = await fetch('/api/auth/check');
+                const data = await res.json();
+                if (data.logged_in) {
+                    if (data.user.is_admin) {
+                        window.location.href = '/admin';
+                    } else {
+                        window.location.href = '/dashboard';
+                    }
+                }
+            } catch (e) {
+                // Not logged in, stay on login page
+            }
+        }
+
+        // ============================================================
+        // CHECK REGISTRATION SUCCESS
+        // ============================================================
+        function checkRegistrationSuccess() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('registered') === 'true') {
+                const successMsg = document.getElementById('successMsg');
+                const successText = document.getElementById('successText');
+                successText.textContent = '✅ Account created successfully! Please login.';
+                successMsg.classList.add('show');
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    successMsg.classList.remove('show');
+                }, 5000);
+            }
+        }
+
+        // ============================================================
+        // KEYBOARD SHORTCUTS
+        // ============================================================
+        document.addEventListener('keydown', (e) => {
+            // Escape -> Landing page
+            if (e.key === 'Escape') {
+                window.location.href = '/';
+            }
+            // Ctrl+Shift+R -> Register page
+            if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+                e.preventDefault();
+                window.location.href = '/register';
+            }
+            // Enter -> Submit form
+            if (e.key === 'Enter') {
+                const form = document.getElementById('loginForm');
+                if (form && document.activeElement.closest('form')) {
+                    e.preventDefault();
+                    form.dispatchEvent(new Event('submit'));
+                }
+            }
+        });
+
+        // ============================================================
+        // TOGGLE PASSWORD VISIBILITY
+        // ============================================================
+        // Add eye toggle if needed (optional)
+        // Uncomment below if you want password toggle
+        /*
+        document.querySelector('.form-input[type="password"]')?.addEventListener('input', function() {
+            // Auto remove error on typing
+            this.classList.remove('error');
+        });
+        */
+
+        // ============================================================
+        // AUTO REMOVE ERROR ON TYPING
+        // ============================================================
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('error');
+                document.getElementById('errorMsg').classList.remove('show');
+            });
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            checkSession();
+            checkRegistrationSuccess();
+            document.getElementById('username').focus();
+
+            console.log('🔥 FF Tools Pro Login Page v2.0');
+            console.log('📌 Tip: Press Ctrl+Shift+R for registration');
+            console.log('📌 Tip: Press Escape for home');
+            console.log('🔐 Secure login system active');
+        });
+    </script>
+
+</body>
+</html>
