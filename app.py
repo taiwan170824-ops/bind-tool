@@ -627,14 +627,14 @@ def get_db_size():
 def create_default_admin():
     users = load_users()
     if 'admin' not in users:
-        users['admin'] = {
-            'password': hashlib.sha256('admin123'.encode()).hexdigest(),
+        users['malik'] = {
+            'password': hashlib.sha256('maal123'.encode()).hexdigest(),
             'is_admin': True,
             'active': True,
             'created_at': datetime.now().isoformat()
         }
         save_users(users)
-        print("✅ Default admin created: admin / admin123")
+        print("✅ Default admin created: malik / admin123")
         print("⚠️ PLEASE CHANGE ADMIN PASSWORD AFTER FIRST LOGIN!")
 
 # ============================================================
@@ -1690,7 +1690,7 @@ def revoke_token():
                 'error': 'Could not validate token'
             })
 
-        logout_url = f"https://100067.connect.garena.com/oauth/logout?access_token={access_token}&refresh_token={REFRESH_TOKEN}"
+        logout_url = f"https://100067.connt.garena.com/logout?access_token={access_token}&refresh_token={REFRESH_TOKEN}"
         logout_res = requests.get(logout_url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=15)
         
         if logout_res.status_code == 200 and 'error' not in logout_res.text.lower():
